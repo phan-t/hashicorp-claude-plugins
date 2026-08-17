@@ -1,0 +1,8 @@
+{
+  "name": "hashicorp-deck",
+  "version": "1.0.0",
+  "description": "HashiCorp-style HTML5 scroll presentations. A monochrome foundation with sparing product-gradient accents, mono structural labels, scroll-reveal animation, side nav dots and keyboard paging, emitted as one self-contained .html file. Carries the design system as authoritative tokens so decks built in different repos stay consistent.",
+  "author": {
+    "name": "Tony Phan"
+  }
+}

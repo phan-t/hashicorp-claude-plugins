@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#000000; --white:#ffffff; --ink:#0a0a0a;
+    --gray-900:#171717; --gray-800:#242424; --gray-700:#3b3b3b;
+    --gray-500:#7a7a7a; --gray-300:#c2c2c2; --gray-100:#ededed; --gray-50:#f7f7f5;
+    --tf-purple:#7b42bc; --tf-purple-bright:#a067e8; --vault-yellow:#ffec6e;
+    --consul-pink:#dc477d; --nomad-green:#60dea9; --solar-yellow:#f5c518; --solar-red:#e3492f;
+    --grad-ilm:linear-gradient(120deg,#7b42bc 0%,#5c4ee5 50%,#2e71e5 100%);
+    --grad-slm:linear-gradient(120deg,#dc477d 0%,#9a4ec2 60%,#5c4ee5 100%);
+    --font-display:"Inter",system-ui,sans-serif; --font-mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--font-display);background:var(--white);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;}
+
+  .slide{min-height:100vh;padding:clamp(2rem,6vw,7rem) clamp(1.5rem,7vw,9rem);display:flex;flex-direction:column;justify-content:center;position:relative;border-bottom:1px solid var(--gray-100);overflow:hidden;}
+  .slide.dark{background:var(--black);color:var(--white);border-bottom:1px solid var(--gray-800);}
+  .slide.paper{background:var(--gray-50);}
+
+  .eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gray-500);display:flex;align-items:center;gap:.8rem;margin-bottom:1.6rem;}
+  .dark .eyebrow{color:var(--gray-300);}
+  .eyebrow::before{content:"";width:2.2rem;height:2px;background:var(--tf-purple);display:inline-block;}
+  .dark .eyebrow::before{background:var(--tf-purple-bright);}
+
+  h1,h2,h3{font-weight:600;letter-spacing:-.02em;line-height:1.04;}
+  h1{font-size:clamp(2.6rem,7vw,6rem);font-weight:700;}
+  h2{font-size:clamp(2rem,4.6vw,3.6rem);}
+  h3{font-size:clamp(1.25rem,2.4vw,1.7rem);font-weight:600;letter-spacing:-.01em;}
+  .lede{font-size:clamp(1.1rem,1.9vw,1.5rem);font-weight:300;color:var(--gray-700);max-width:46ch;margin-top:1.6rem;}
+  .dark .lede{color:var(--gray-300);}
+  p{font-weight:400;}
+  .grad-text{background:var(--grad-ilm);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .grad-text-slm{background:var(--grad-slm);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+
+  .row{display:grid;gap:clamp(2rem,4vw,4.5rem);align-items:center;}
+  .row.split{grid-template-columns:1.05fr .95fr;}
+  @media(max-width:880px){.row.split{grid-template-columns:1fr;}}
+  .stack>*+*{margin-top:1.2rem;}
+
+  ul.clean{list-style:none;}
+  ul.clean li{padding-left:1.6rem;position:relative;margin-top:1rem;color:var(--gray-700);font-weight:400;font-size:clamp(1rem,1.4vw,1.12rem);}
+  .dark ul.clean li{color:var(--gray-300);}
+  ul.clean li::before{content:"";position:absolute;left:0;top:.62em;width:.55rem;height:.55rem;border-radius:50%;background:var(--tf-purple);}
+  .dark ul.clean li::before{background:var(--nomad-green);}
+  ul.clean li b{color:var(--ink);font-weight:600;} .dark ul.clean li b{color:var(--white);}
+
+  pre{font-family:var(--font-mono);font-size:clamp(.74rem,1vw,.9rem);background:var(--gray-900);color:var(--gray-100);border-radius:14px;padding:1.4rem 1.6rem;overflow-x:auto;line-height:1.7;border:1px solid var(--gray-800);}
+  pre .c{color:var(--gray-500);} pre .k{color:var(--tf-purple-bright);} pre .s{color:var(--nomad-green);} pre .n{color:var(--vault-yellow);}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;margin-top:2.4rem;}
+  .card{border:1px solid var(--gray-100);border-radius:16px;padding:1.6rem;background:var(--white);position:relative;overflow:hidden;}
+  .dark .card{background:var(--gray-900);border-color:var(--gray-800);}
+  .card .num{font-size:clamp(2rem,3.4vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1;}
+  .card .cap{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-500);margin-top:.7rem;}
+  .card .desc{font-size:.95rem;color:var(--gray-700);margin-top:.8rem;} .dark .card .desc{color:var(--gray-300);}
+
+  .fix{border-left:3px solid var(--tf-purple);padding:1rem 0 1rem 1.4rem;margin-top:1.6rem;}
+  .dark .fix{border-left-color:var(--tf-purple-bright);}
+  .fix .h{font-weight:600;font-size:1.12rem;display:flex;align-items:center;gap:.7rem;}
+  .fix .tag{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;border-radius:5px;background:var(--gray-100);color:var(--gray-700);}
+  .dark .fix .tag{background:var(--gray-800);color:var(--gray-300);}
+  .fix p{color:var(--gray-700);margin-top:.5rem;font-size:1rem;} .dark .fix p{color:var(--gray-300);}
+
+  .kbd{font-family:var(--font-mono);background:var(--gray-100);padding:.12em .45em;border-radius:5px;font-size:.85em;border:1px solid var(--gray-300);}
+  .dark .kbd{background:var(--gray-800);border-color:var(--gray-700);color:var(--white);}
+  .footnote{font-size:.85rem;color:var(--gray-500);margin-top:1.4rem;font-style:italic;}
+  .lockup{display:flex;align-items:center;gap:.7rem;font-family:var(--font-mono);font-size:.82rem;letter-spacing:.08em;}
+  .lockup .sq{width:18px;height:18px;border-radius:4px;background:var(--grad-ilm);}
+
+  /* ---- chrome ---- */
+  .pagenum{position:absolute;bottom:clamp(1.2rem,3vh,2.4rem);right:clamp(1.5rem,7vw,9rem);font-family:var(--font-mono);font-size:.74rem;color:var(--gray-500);}
+  .secttag{position:absolute;bottom:clamp(1.2rem,3vh,2.4rem);left:clamp(1.5rem,7vw,9rem);font-family:var(--font-mono);font-size:.74rem;color:var(--gray-500);letter-spacing:.12em;text-transform:uppercase;}
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--grad-ilm);width:0;z-index:100;transition:width .1s;}
+  .dots{position:fixed;right:18px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:11px;z-index:90;}
+  .dots a{width:9px;height:9px;border-radius:50%;background:var(--gray-300);transition:all .2s;display:block;}
+  .dots a:hover{transform:scale(1.3);} .dots a.active{background:var(--tf-purple);transform:scale(1.25);}
+  @media(max-width:880px){.dots{display:none;}}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav class="dots" id="dots"></nav>
+
+<div class="deck">
+
+  <!-- TITLE -->
+  <section class="slide dark" id="title" data-name="Title">
+    <div class="lockup" style="margin-bottom:2.4rem;"><span class="sq"></span> presenter · context</div>
+    <div class="eyebrow">Eyebrow label</div>
+    <h1>Headline with one <span class="grad-text" style="background:linear-gradient(120deg,#a067e8,#5c8aff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">accent</span></h1>
+    <p class="lede">Subtitle that frames the talk in a sentence or two.</p>
+    <div class="secttag">00 — Intro</div>
+    <div class="pagenum">01</div>
+  </section>
+
+  <!-- EXAMPLE CONTENT SLIDE -->
+  <section class="slide" data-name="Example">
+    <div class="eyebrow reveal">Section label</div>
+    <h2 class="reveal" style="max-width:20ch;">A point with one <span class="grad-text">accented</span> phrase</h2>
+    <p class="lede reveal">Supporting framing sentence.</p>
+    <div class="secttag">01 — Section</div>
+    <div class="pagenum">02</div>
+  </section>
+
+</div>
+
+<script>
+  // reveal-on-scroll
+  const revObs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');revObs.unobserve(e.target);}});},{threshold:.18});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%6*0.06)+'s';revObs.observe(el);});
+
+  // nav dots
+  const slides=[...document.querySelectorAll('.slide')];
+  const dots=document.getElementById('dots');
+  slides.forEach((s,i)=>{if(!s.id)s.id='s'+i;const a=document.createElement('a');a.href='#'+s.id;a.title=s.dataset.name||('Slide '+(i+1));dots.appendChild(a);});
+  const dotEls=[...dots.children];
+
+  // progress
+  const prog=document.getElementById('progress');
+  function onScroll(){const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // active dot + current slide
+  let cur=0;
+  const actObs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const idx=slides.indexOf(e.target);cur=idx;dotEls.forEach((d,i)=>d.classList.toggle('active',i===idx));}});},{threshold:.5});
+  slides.forEach(s=>actObs.observe(s));
+
+  // keyboard paging
+  function go(n){cur=Math.max(0,Math.min(slides.length-1,n));slides[cur].scrollIntoView({behavior:'smooth'});}
+  window.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowDown'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+    if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+  });
+
+  // ---- Add any optional enhancements here (see references/interactions.md):
+  //   countUp() for animated metric counters on a "by the numbers" slide
+</script>
+</body>
+</html>
