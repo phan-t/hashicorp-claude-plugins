@@ -24,7 +24,9 @@ import copy
 from pathlib import Path
 
 from pptx import Presentation
+from pptx.chart.data import CategoryChartData
 from pptx.dml.color import RGBColor
+from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
 from pptx.enum.dml import MSO_THEME_COLOR
 from pptx.enum.shapes import MSO_SHAPE
 from lxml import etree  # noqa: F401
@@ -461,6 +463,43 @@ class Deck:
             for row_obj in shape.table.rows:
                 row_obj.height = height
             shape.height = height * n_rows
+        self.drop_empty(slide)
+        return slide
+
+    #: Where template slide 62 puts its chart on the Chart layout. There is no
+    #: chart placeholder, so the graphic frame is positioned to match.
+    CHART_BOX = (Inches(7.3), Inches(1.7), Inches(18.8), Inches(12.1))
+
+    def chart(self, title, categories, series, body=None, source=None,
+              chart_type=None, notes=None):
+        """A native chart on IBM's Chart layout, laid out as slide 62 does.
+
+        `series` is a list of (name, values). Native rather than an image, so
+        the numbers stay editable and the marks pick up IBM's theme colours.
+
+        One value axis only: python-pptx cannot build a secondary axis, and
+        IBM's own reference chart does not use one. Two measures of different
+        scale therefore have to be indexed to a common base before they can
+        share this chart.
+        """
+        slide = self.add("chart", notes)
+        self.set_text(slide.shapes.title, title)
+        bodies = self.bodies(slide)
+        if body and bodies:
+            self.set_text(max(bodies, key=lambda b: b.height), body)
+        if source and bodies:
+            self.set_text(min(bodies, key=lambda b: b.height), source)
+        data = CategoryChartData()
+        data.categories = list(categories)
+        for name, values in series:
+            data.add_series(name, tuple(values))
+        frame = slide.shapes.add_chart(
+            chart_type or XL_CHART_TYPE.LINE_MARKERS, *self.CHART_BOX, data)
+        ch = frame.chart
+        ch.has_title = False
+        ch.has_legend = True
+        ch.legend.position = XL_LEGEND_POSITION.BOTTOM
+        ch.legend.include_in_layout = False
         self.drop_empty(slide)
         return slide
 
