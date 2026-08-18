@@ -7,7 +7,12 @@
     {
       "name": "hashicorp-deck",
       "source": "./plugins/hashicorp-deck",
-      "description": "Build single-file HTML5 scroll presentations in the HashiCorp brand style: monochrome foundation, sparing product-gradient accents, mono structural labels, scroll-reveal, side nav and keyboard paging. For decks shared as a self-contained .html rather than a slide file."
+      "description": "HashiCorp-branded presentation skills. `hashicorp-deck-html` builds single-file HTML5 scroll presentations in the HashiCorp brand style: monochrome foundation, sparing product-gradient accents, mono structural labels, scroll-reveal, side nav and keyboard paging."
+    },
+    {
+      "name": "ibm-deck",
+      "source": "./plugins/ibm-deck",
+      "description": "IBM-branded presentation skills. `ibm-deck-htmltopptx` converts an existing HTML presentation into an editable .pptx re-typeset on the official IBM template: IBM Plex, the Carbon palette and IBM's own slide layouts."
     }
   ]
 }

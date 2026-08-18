@@ -1,5 +1,5 @@
 ---
-name: hashicorp-deck
+name: hashicorp-deck-html
 description: Build elegant, single-file HTML5 scroll presentations in a HashiCorp-inspired brand style — a black/white foundation with product-gradient accents, mono structural labels, scroll-reveal animations, side nav, and a clean editorial slide structure. Use this skill whenever the user wants a slide deck, presentation, talk, or technical walkthrough as a self-contained HTML file (not PowerPoint), especially for engineering/developer audiences, project retros, "why I built X" talks, architecture explainers, product updates, or anything where they reference this style, the HashiCorp look, or a previous deck built this way. Prefer this over generic HTML when the user wants a polished, branded, scrollable web presentation.
 ---
 
