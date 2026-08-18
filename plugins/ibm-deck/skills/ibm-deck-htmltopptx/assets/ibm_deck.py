@@ -371,7 +371,8 @@ class Deck:
     # divides the placeholder's full height evenly across the rows, so a short table
     # renders as a few enormous cells with the text marooned in them: six rows in the
     # 12.7 in placeholder gives 2.1 in per row for 0.25 in of text.
-    ROW_HEIGHT = Inches(0.62)
+    ROW_HEIGHT = Inches(0.8)     # what IBM's own demo tables use
+    CELL_PT = Pt(24)             # ditto; 18 pt reads small on a 26.7 in slide
 
     def table(self, title, rows, notes=None, row_height=None):
         """rows: list of lists; the first row is treated as the header.
@@ -393,8 +394,9 @@ class Deck:
                 cell.text = str(row[c]) if c < len(row) else ""
                 for p in cell.text_frame.paragraphs:
                     for run in p.runs:
-                        run.font.size = Pt(18)
-                        run.font.bold = r == 0
+                        # The template's table style already emphasises the header
+                        # row via firstRow="1"; bolding here fights it.
+                        run.font.size = self.CELL_PT
         height = row_height or self.ROW_HEIGHT
         if height * n_rows <= ph.height:      # otherwise let it share the box evenly
             for row_obj in shape.table.rows:
