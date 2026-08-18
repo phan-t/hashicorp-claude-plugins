@@ -26,6 +26,8 @@ from pathlib import Path
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
+from lxml import etree  # noqa: F401
+from pptx.oxml.ns import qn
 from pptx.util import Emu, Inches, Pt
 
 TEMPLATE = Path(__file__).with_name("ibm-brand-template.pptx")
@@ -80,6 +82,49 @@ GRAY_90 = RGBColor.from_string("262626")
 GRAY_100 = RGBColor.from_string("161616")
 BLUE_60 = RGBColor.from_string("0F62FE")
 FONT_MONO = "IBM Plex Mono"
+
+
+# IBM's reference table (template slide 51) does not get its look from the table
+# style: tableStyles.xml only defines PowerPoint's generic blue "Medium Style 2 -
+# Accent 1". Every cell instead carries explicit formatting — no fill, no vertical
+# rules, a horizontal rule above and below, and 0.2 in top/bottom margins. Without
+# this a generated table renders blue-banded and boxed, nothing like the template.
+_CELL_MARGIN = 182880          # 0.2 in, in EMU
+_RULE_W = 12700                # 1 pt
+
+
+
+def _border(parent, name, solid):
+    el = parent.makeelement(qn("a:" + name), {"w": str(_RULE_W), "cap": "flat",
+                                              "cmpd": "sng", "algn": "ctr"})
+    if solid:
+        fill = el.makeelement(qn("a:solidFill"), {})
+        clr = el.makeelement(qn("a:schemeClr"), {"val": "tx1"})
+        fill.append(clr)
+        el.append(fill)
+    else:
+        el.append(el.makeelement(qn("a:noFill"), {}))
+    el.append(el.makeelement(qn("a:prstDash"), {"val": "solid"}))
+    el.append(el.makeelement(qn("a:round"), {}))
+    parent.append(el)
+    return el
+
+
+def style_cell(cell, is_header=False):
+    """Stamp IBM's cell formatting onto one table cell."""
+    tc = cell._tc
+    old = tc.find(qn("a:tcPr"))
+    if old is not None:
+        tc.remove(old)
+    pr = tc.makeelement(qn("a:tcPr"), {"marT": str(_CELL_MARGIN),
+                                       "marB": str(_CELL_MARGIN)})
+    _border(pr, "lnL", False)                 # no vertical rules
+    _border(pr, "lnR", False)
+    _border(pr, "lnT", not is_header)         # header has a rule below only
+    _border(pr, "lnB", True)
+    pr.append(pr.makeelement(qn("a:noFill"), {}))   # transparent, no banding
+    tc.append(pr)
+    return cell
 
 
 class Deck:
@@ -392,10 +437,9 @@ class Deck:
             for c in range(n_cols):
                 cell = shape.table.cell(r, c)
                 cell.text = str(row[c]) if c < len(row) else ""
+                style_cell(cell, is_header=(r == 0))
                 for p in cell.text_frame.paragraphs:
                     for run in p.runs:
-                        # The template's table style already emphasises the header
-                        # row via firstRow="1"; bolding here fights it.
                         run.font.size = self.CELL_PT
         height = row_height or self.ROW_HEIGHT
         if height * n_rows <= ph.height:      # otherwise let it share the box evenly

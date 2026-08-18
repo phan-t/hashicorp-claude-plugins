@@ -1,6 +1,6 @@
 {
   "name": "ibm-deck",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "IBM-branded presentation skills. `ibm-deck-htmltopptx` converts an existing HTML presentation into an editable .pptx re-typeset in the IBM Design Language: IBM Plex type, the Carbon color palette, the 2x grid, flat zero-radius shapes and a left-aligned editorial layout. Carries the design system as authoritative tokens so decks converted in different repos stay consistent.",
   "author": {
     "name": "Tony Phan"
