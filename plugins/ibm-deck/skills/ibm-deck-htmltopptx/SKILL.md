@@ -21,6 +21,13 @@ point: the template is authoritative, so decks converted in different repos come
 pip install python-pptx beautifulsoup4
 ```
 
+On a system Python that is externally managed (Homebrew, and macOS system Python), pip refuses
+this with a PEP 668 error. Use a virtualenv rather than `--break-system-packages`:
+
+```
+python3 -m venv .venv && .venv/bin/pip install python-pptx beautifulsoup4
+```
+
 IBM Plex must be installed locally for the deck to *look* right when opened; without it
 PowerPoint substitutes a fallback face. The file is still correct either way — the font is
 named in the theme, not embedded.
@@ -67,6 +74,30 @@ d.code("The guardrail", open("policy.rego").read(), caption="policy.rego")
 d.end()
 d.save("deck.pptx")
 ```
+
+### Running from a project of your own
+
+`ibm_deck` lives in this skill's `assets/`, which is not on `sys.path` anywhere else, so a build
+script kept in a project repo has to locate it. Glob the version rather than hardcoding one, or
+the script breaks the next time this plugin is updated:
+
+```python
+import glob, os, sys
+
+hits = sorted(glob.glob(os.path.expanduser(
+    "~/.claude/plugins/cache/*/ibm-deck/*/skills/ibm-deck-htmltopptx/assets")))
+if not hits:
+    sys.exit("ibm-deck plugin not found. Install it with:\n"
+             "  /plugin install ibm-deck@hashicorp-field")
+sys.path.insert(0, hits[-1])
+
+from ibm_deck import Deck  # noqa: E402
+```
+
+**Keep that build script in the project, not here.** It carries one deck's content, which is
+frequently not shareable, and nobody else can run it against theirs. This skill owns the layouts;
+the project owns what goes in them. Re-running the script stays the reproducible path, so edit it
+rather than patching the `.pptx`.
 
 Every method appends one slide and returns it, so you can reach for python-pptx afterwards
 if a slide needs something bespoke. `**bold**` works inside any text. Full method list and
