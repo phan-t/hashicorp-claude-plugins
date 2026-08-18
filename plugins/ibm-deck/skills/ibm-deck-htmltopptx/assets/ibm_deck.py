@@ -25,6 +25,7 @@ from pathlib import Path
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
+from pptx.enum.dml import MSO_THEME_COLOR
 from pptx.enum.shapes import MSO_SHAPE
 from lxml import etree  # noqa: F401
 from pptx.oxml.ns import qn
@@ -110,8 +111,22 @@ def _border(parent, name, solid):
     return el
 
 
+#: IBM distinguishes the header by weight, not by bold; slide 51 uses these.
+FONT_TABLE_HEAD = "IBM Plex Sans Medm"
+FONT_TABLE_BODY = "IBM Plex Sans Light"
+
+
 def style_cell(cell, is_header=False):
-    """Stamp IBM's cell formatting onto one table cell."""
+    """Stamp IBM's cell formatting onto one table cell.
+
+    The run colour is not cosmetic. The table style sets first-row text to lt1
+    (white) because it expects the blue accent1 fill that we suppress, so
+    without an explicit tx1 the header renders white on white and vanishes.
+    """
+    for para in cell.text_frame.paragraphs:
+        for run in para.runs:
+            run.font.color.theme_color = MSO_THEME_COLOR.TEXT_1
+            run.font.name = FONT_TABLE_HEAD if is_header else FONT_TABLE_BODY
     tc = cell._tc
     old = tc.find(qn("a:tcPr"))
     if old is not None:
