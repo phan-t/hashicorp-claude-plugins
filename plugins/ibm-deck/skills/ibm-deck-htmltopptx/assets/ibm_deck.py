@@ -367,8 +367,19 @@ class Deck:
         pic.top = Emu(int(box[1] - (pic.height - box[3]) / 2))
         return pic
 
-    def table(self, title, rows, notes=None):
-        """rows: list of lists; the first row is treated as the header."""
+    # A table row only needs to be tall enough for its type. Left alone, python-pptx
+    # divides the placeholder's full height evenly across the rows, so a short table
+    # renders as a few enormous cells with the text marooned in them: six rows in the
+    # 12.7 in placeholder gives 2.1 in per row for 0.25 in of text.
+    ROW_HEIGHT = Inches(0.62)
+
+    def table(self, title, rows, notes=None, row_height=None):
+        """rows: list of lists; the first row is treated as the header.
+
+        Rows are sized to their content rather than stretched to fill the
+        placeholder. Pass row_height to override; tables too tall for the
+        placeholder fall back to sharing it evenly.
+        """
         slide = self.add("table", notes)
         self.set_text(slide.shapes.title, title)
         ph = self.ph(slide, "TABLE")
@@ -384,6 +395,11 @@ class Deck:
                     for run in p.runs:
                         run.font.size = Pt(18)
                         run.font.bold = r == 0
+        height = row_height or self.ROW_HEIGHT
+        if height * n_rows <= ph.height:      # otherwise let it share the box evenly
+            for row_obj in shape.table.rows:
+                row_obj.height = height
+            shape.height = height * n_rows
         self.drop_empty(slide)
         return slide
 
