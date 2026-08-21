@@ -11,6 +11,7 @@ another. Skills live here once, and projects install them.
 | Plugin | Skill | What it does |
 |---|---|---|
 | `hashicorp-deck` | `hashicorp-deck-html` | Builds single-file HTML5 scroll presentations in the HashiCorp brand style. Monochrome foundation, sparing product-gradient accents, mono structural labels, scroll-reveal, side nav and keyboard paging. |
+| `hashicorp-deck` | `hashicorp-deck-htmltopptx` | Converts an existing HTML presentation into an editable HashiCorp-branded `.pptx`, re-typeset on the official CY26 presentation kit — Inter, the signature glow gradient and HashiCorp's own slide layouts. Light or dark, sharing one layout grammar. Content conversion, not screenshots. |
 | `ibm-deck` | `ibm-deck-htmltopptx` | Converts an existing HTML presentation into an editable IBM-branded `.pptx`, re-typeset on the official IBM template — IBM Plex, the Carbon palette and IBM's own slide layouts. Content conversion, not screenshots. |
 
 A plugin can carry more than one skill — each groups the deck builders for one brand, one skill
@@ -50,6 +51,11 @@ plugins/<plugin>/
   Skills read from it rather than restating values, which is what stopped it drifting before.
 - **Keep skills portable.** No absolute paths and no assumptions about the surrounding repo,
   since these run wherever they are installed.
-- **Vendor brand templates, stripped.** `ibm-deck` ships IBM's official template with its demo
-  slides and media removed — 21 MB down to 144 KB. Bundling it is what guarantees every
-  converted deck uses the same master, and keeps the skill working with no external download.
+- **Vendor brand templates, stripped.** Both `.pptx` skills ship their brand's official template
+  with the demo slides and unused media removed — IBM's 21 MB down to 144 KB, HashiCorp's 26 MB
+  down to 6 MB. Bundling them is what guarantees every converted deck uses the same master, and
+  keeps the skills working with no external download. Each skill's `references/design-system.md`
+  records the exact strip, so the template can be refreshed when the brand ships a new kit.
+- **Derive, don't fork.** `hashicorp-deck`'s dark template is generated from its light one by
+  `assets/make_dark.py`, so the two cannot drift in layout, slot indices or bullets. Re-run it
+  after refreshing the light kit.

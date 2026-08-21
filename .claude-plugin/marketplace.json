@@ -7,7 +7,7 @@
     {
       "name": "hashicorp-deck",
       "source": "./plugins/hashicorp-deck",
-      "description": "HashiCorp-branded presentation skills. `hashicorp-deck-html` builds single-file HTML5 scroll presentations in the HashiCorp brand style: monochrome foundation, sparing product-gradient accents, mono structural labels, scroll-reveal, side nav and keyboard paging."
+      "description": "HashiCorp-branded presentation skills. `hashicorp-deck-html` builds single-file HTML5 scroll presentations in the HashiCorp brand style. `hashicorp-deck-htmltopptx` converts an existing HTML presentation into an editable .pptx re-typeset on the official HashiCorp CY26 kit: Inter, the signature glow gradient and HashiCorp's own slide layouts."
     },
     {
       "name": "ibm-deck",
