@@ -13,6 +13,11 @@
       "name": "ibm-deck",
       "source": "./plugins/ibm-deck",
       "description": "IBM-branded presentation skills. `ibm-deck-htmltopptx` converts an existing HTML presentation into an editable .pptx re-typeset on the official IBM template: IBM Plex, the Carbon palette and IBM's own slide layouts."
+    },
+    {
+      "name": "hashicorp-diagram",
+      "source": "./plugins/hashicorp-diagram",
+      "description": "HashiCorp-branded diagram assets. `hashicorp-diagram-excalidraw` supplies 54 Flight icons as an Excalidraw stencil scene and as individual SVGs, with every colour pinned to the Helios design system, for architecture diagrams drawn by hand in Excalidraw or Excalidraw+."
     }
   ]
 }

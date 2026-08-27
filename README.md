@@ -13,6 +13,7 @@ another. Skills live here once, and projects install them.
 | `hashicorp-deck` | `hashicorp-deck-html` | Builds single-file HTML5 scroll presentations in the HashiCorp brand style. Monochrome foundation, sparing product-gradient accents, mono structural labels, scroll-reveal, side nav and keyboard paging. |
 | `hashicorp-deck` | `hashicorp-deck-htmltopptx` | Converts an existing HTML presentation into an editable HashiCorp-branded `.pptx`, re-typeset on the official CY26 presentation kit — Inter, the signature glow gradient and HashiCorp's own slide layouts. Light or dark, sharing one layout grammar. Content conversion, not screenshots. |
 | `ibm-deck` | `ibm-deck-htmltopptx` | Converts an existing HTML presentation into an editable IBM-branded `.pptx`, re-typeset on the official IBM template — IBM Plex, the Carbon palette and IBM's own slide layouts. Content conversion, not screenshots. |
+| `hashicorp-diagram` | `hashicorp-diagram-excalidraw` | Supplies HashiCorp-branded icons and Helios product colours for architecture diagrams drawn by hand in Excalidraw or Excalidraw+. Ships a stencil scene of 54 Flight icons and the individual SVGs. Assets, not a generator. |
 
 A plugin can carry more than one skill — each groups the deck builders for one brand, one skill
 per output format, so they share a single install and the same design system.
@@ -25,6 +26,7 @@ Add the marketplace, then install the plugin:
 /plugin marketplace add phan-t/hashicorp-claude-plugins
 /plugin install hashicorp-deck@hashicorp-field
 /plugin install ibm-deck@hashicorp-field
+/plugin install hashicorp-diagram@hashicorp-field
 ```
 
 To work on the plugins locally, point the marketplace at your clone instead:

@@ -1,0 +1,8 @@
+{
+  "name": "hashicorp-diagram",
+  "version": "1.0.0",
+  "description": "HashiCorp-branded diagram assets. `hashicorp-diagram-excalidraw` supplies 54 Flight icons — product marks, clouds, infrastructure, security and signal vocabulary — as an Excalidraw stencil scene and as individual SVGs, with every colour pinned to the Helios design system. Assets rather than a generator: diagrams stay hand-drawn, the branding stops drifting. The build fails if an upstream icon colour disagrees with the recorded Helios value.",
+  "author": {
+    "name": "Tony Phan"
+  }
+}
