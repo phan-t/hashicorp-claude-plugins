@@ -122,6 +122,12 @@ accent — never as a slide background:
 | Boundary | `#ec585d` | Identity-based user access |
 | Consul | `#dc477d` | Service-based networking |
 
+These are the kit's values, not [Helios](https://helios.hashicorp.design/foundations/colors)
+ones. Helios is the product UI system and publishes darker hues for Consul (`#e03875`),
+Nomad (`#06d092`), Boundary (`#f24c53`), Packer (`#02a8ef`) and Waypoint (`#14c6cb`). The kit
+governs slides because this skill re-typesets onto the kit's own master; Helios governs
+diagrams, which is what `hashicorp-diagram` follows. Do not reconcile this table to Helios.
+
 `hashicorp_deck.GLOW`, `.PRODUCT` and `.CHART_COLORS` carry these. Chart series run the
 four glow stops, then Waypoint teal and Nomad green — six categoricals that stay in the
 family and hold up on a light ground.

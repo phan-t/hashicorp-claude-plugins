@@ -21,7 +21,7 @@ Authoritative tokens, typography, and base styles for the HashiCorp-style deck. 
   /* Iconic product hues — used ONLY as small accents */
   --tf-purple:#7b42bc;        /* Terraform */
   --tf-purple-bright:#a067e8; /* purple on dark backgrounds */
-  --vault-yellow:#ffec6e;     /* Vault */
+  --vault-yellow:#ffcf25;     /* Vault */
   --consul-pink:#dc477d;      /* Consul */
   --nomad-green:#60dea9;      /* Nomad */
   /* extra signal hues for data viz / status */
@@ -43,6 +43,22 @@ Load fonts via Google Fonts in `<head>`:
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 ```
+
+## Where these values come from
+
+Two authorities publish HashiCorp product colours and they do not agree:
+
+- The **CY26 presentation kit**, whose own "Product colors" slide governs anything that ends
+  up on a slide. `hashicorp-deck-htmltopptx` re-typesets onto that kit's master, so the hues
+  here match it — otherwise a deck would shift colour on conversion.
+- **[Helios](https://helios.hashicorp.design/foundations/colors)**, the product UI system,
+  which governs application and diagram work. `hashicorp-diagram` follows Helios.
+
+The kit and Helios agree on Terraform (`#7b42bc`) and Vault (`#ffcf25`) and diverge on Consul
+(kit `#dc477d`, Helios `#e03875`) and Nomad (kit `#60dea9`, Helios `#06d092`). **For decks the
+kit wins.** The divergence is deliberate; do not "fix" these to the Helios values.
+
+Vault was `#ffec6e` here until it was reconciled — that value matched neither authority.
 
 ## Color usage rules
 
