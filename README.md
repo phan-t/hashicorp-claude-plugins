@@ -14,9 +14,11 @@ another. Skills live here once, and projects install them.
 | `hashicorp-deck` | `hashicorp-deck-htmltopptx` | Converts an existing HTML presentation into an editable HashiCorp-branded `.pptx`, re-typeset on the official CY26 presentation kit — Inter, the signature glow gradient and HashiCorp's own slide layouts. Light or dark, sharing one layout grammar. Content conversion, not screenshots. |
 | `ibm-deck` | `ibm-deck-htmltopptx` | Converts an existing HTML presentation into an editable IBM-branded `.pptx`, re-typeset on the official IBM template — IBM Plex, the Carbon palette and IBM's own slide layouts. Content conversion, not screenshots. |
 | `hashicorp-diagram` | `hashicorp-diagram-excalidraw` | Supplies HashiCorp-branded icons and Helios product colours for architecture diagrams drawn by hand in Excalidraw or Excalidraw+. Ships a stencil scene of 54 Flight icons and the individual SVGs. Assets, not a generator. |
+| `hashicorp-page` | `hashicorp-page-html` | Builds single-file HTML page documents in the HashiCorp brand style — long-form reports, briefings, decision papers and leadership readouts. Black top bar and hero with a headline-number strip, numbered sections on alternating backgrounds, evidence tables with status pills, charts drawn in CSS, ranked asks and a provenance footer. A document, not a deck. |
 
-A plugin can carry more than one skill — each groups the deck builders for one brand, one skill
-per output format, so they share a single install and the same design system.
+A plugin can carry more than one skill — each groups the builders for one brand and one kind of
+deliverable, one skill per output format, so they share a single install and the same design
+system.
 
 ## Install
 
@@ -27,6 +29,7 @@ Add the marketplace, then install the plugin:
 /plugin install hashicorp-deck@hashicorp-field
 /plugin install ibm-deck@hashicorp-field
 /plugin install hashicorp-diagram@hashicorp-field
+/plugin install hashicorp-page@hashicorp-field
 ```
 
 To work on the plugins locally, point the marketplace at your clone instead:
@@ -58,6 +61,10 @@ plugins/<plugin>/
   down to 6 MB. Bundling them is what guarantees every converted deck uses the same master, and
   keeps the skills working with no external download. Each skill's `references/design-system.md`
   records the exact strip, so the template can be refreshed when the brand ships a new kit.
+- **One palette per medium.** Three HashiCorp palettes disagree on product hues. The CY26
+  presentation kit governs decks, because `hashicorp-deck-htmltopptx` re-typesets onto its
+  master. Helios governs diagrams and page documents, which are read on a screen. Each skill's
+  `references/design-system.md` records both columns so the divergence stays deliberate.
 - **Derive, don't fork.** `hashicorp-deck`'s dark template is generated from its light one by
   `assets/make_dark.py`, so the two cannot drift in layout, slot indices or bullets. Re-run it
   after refreshing the light kit.

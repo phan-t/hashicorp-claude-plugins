@@ -18,6 +18,11 @@
       "name": "hashicorp-diagram",
       "source": "./plugins/hashicorp-diagram",
       "description": "HashiCorp-branded diagram assets. `hashicorp-diagram-excalidraw` supplies 54 Flight icons as an Excalidraw stencil scene and as individual SVGs, with every colour pinned to the Helios design system, for architecture diagrams drawn by hand in Excalidraw or Excalidraw+."
+    },
+    {
+      "name": "hashicorp-page",
+      "source": "./plugins/hashicorp-page",
+      "description": "HashiCorp-branded document skills. `hashicorp-page-html` builds single-file HTML page documents — long-form reports, briefings, decision papers and leadership readouts: black top bar and hero with a headline-number strip, numbered sections, evidence tables, CSS-drawn charts and a provenance footer. A document, not a deck."
     }
   ]
 }

@@ -52,7 +52,8 @@ Two authorities publish HashiCorp product colours and they do not agree:
   up on a slide. `hashicorp-deck-htmltopptx` re-typesets onto that kit's master, so the hues
   here match it — otherwise a deck would shift colour on conversion.
 - **[Helios](https://helios.hashicorp.design/foundations/colors)**, the product UI system,
-  which governs application and diagram work. `hashicorp-diagram` follows Helios.
+  which governs application, diagram and page-document work. `hashicorp-diagram` and
+  `hashicorp-page` follow Helios.
 
 The kit and Helios agree on Terraform (`#7b42bc`) and Vault (`#ffcf25`) and diverge on Consul
 (kit `#dc477d`, Helios `#e03875`) and Nomad (kit `#60dea9`, Helios `#06d092`). **For decks the

@@ -1,0 +1,8 @@
+{
+  "name": "hashicorp-page",
+  "version": "1.0.0",
+  "description": "HashiCorp-branded document skills. `hashicorp-page-html` emits a self-contained .html page document — a long-form report, briefing, decision paper or leadership readout rather than a deck: black top bar and hero with a headline-number strip, numbered sections on alternating backgrounds, dense evidence tables with status pills, charts drawn in CSS so the file needs no network, ranked asks and a provenance footer. Carries its design system as authoritative tokens, on the Helios palette that governs pages, so documents built in different repos stay consistent.",
+  "author": {
+    "name": "Tony Phan"
+  }
+}

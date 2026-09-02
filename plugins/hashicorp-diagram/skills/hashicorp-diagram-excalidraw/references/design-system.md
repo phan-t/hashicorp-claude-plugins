@@ -19,8 +19,9 @@ presentation kit on several product hues, which is why the table below records b
 
 These are the Helios values, and they govern **diagrams**. They are not the only HashiCorp
 product palette: the CY26 presentation kit publishes its own, and where the two disagree the
-kit governs slides while Helios governs diagrams and application UI. See
-`plugins/hashicorp-deck/skills/hashicorp-deck-html/references/design-system.md`.
+kit governs slides while Helios governs diagrams, page documents and application UI. See
+`plugins/hashicorp-deck/skills/hashicorp-deck-html/references/design-system.md` and
+`plugins/hashicorp-page/skills/hashicorp-page-html/references/design-system.md`.
 
 | Product | Helios (diagrams) | CY26 kit (decks) |
 |---|---|---|
