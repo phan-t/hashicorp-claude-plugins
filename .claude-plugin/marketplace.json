@@ -23,6 +23,11 @@
       "name": "hashicorp-page",
       "source": "./plugins/hashicorp-page",
       "description": "HashiCorp-branded document skills. `hashicorp-page-html` builds single-file HTML page documents — long-form reports, briefings, decision papers and leadership readouts: black top bar and hero with a headline-number strip, numbered sections, evidence tables, CSS-drawn charts and a provenance footer. A document, not a deck."
+    },
+    {
+      "name": "hashicorp-doc",
+      "source": "./plugins/hashicorp-doc",
+      "description": "HashiCorp-branded Word document skills. `hashicorp-doc-docx` builds a customer-facing .docx assessment or engagement report on the house template: full-bleed cover art with the wordmark, a live table of contents, a revision-history table, numbered sections under a `version / title` running header, and rule-and-band recommendation tables carrying ID / Impact / Effort / Priority / Category."
     }
   ]
 }
