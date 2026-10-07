@@ -1,0 +1,8 @@
+{
+  "name": "writing-style",
+  "version": "1.0.0",
+  "description": "A personal writing style that learns. `writing-style` writes and reviews prose as a technical writer would, strips the patterns that mark text as machine-written, and keeps a style profile outside the plugin that grows each time the author edits a draft or corrects a phrase. A bundled checker flags AI-slop vocabulary, stock structures and the author's own banned patterns, so the rules are enforced rather than remembered.",
+  "author": {
+    "name": "Tony Phan"
+  }
+}

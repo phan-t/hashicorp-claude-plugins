@@ -16,6 +16,7 @@ another. The skills live here once, and projects install them.
 | `hashicorp-diagram` | `hashicorp-diagram-excalidraw` | Supplies HashiCorp-branded icons and Helios product colours for architecture diagrams drawn by hand in Excalidraw or Excalidraw+. Ships a stencil scene of 54 Flight icons and the individual SVGs. These are assets rather than a generator. |
 | `hashicorp-doc` | `hashicorp-doc-docx` | Builds customer-facing Microsoft Word documents in the HashiCorp house style, such as assessments, engagement reports, architecture reviews and other professional-services deliverables. Full-bleed cover art with the wordmark, a metadata block, a live table of contents, a revision-history table, one section per page under a `version / title` running header, rule-and-band recommendation tables carrying ID, Impact, Effort, Priority and Category, and the HashiCorp back cover. The output is an editable `.docx`, because the customer has to review and circulate it. |
 | `hashicorp-page` | `hashicorp-page-html` | Builds single-file HTML page documents in the HashiCorp brand style, such as long-form reports, briefings, decision papers and leadership readouts. Black top bar and hero with a headline-number strip, numbered sections on alternating backgrounds, evidence tables with status pills, charts drawn in CSS, ranked asks and a provenance footer. It is a document rather than a deck. |
+| `writing-style` | `writing-style` | Writes and reviews prose in the author's own voice, as a technical writer would and with no AI slop. The style profile lives in `~/.claude/writing-style/profile.md` rather than in the plugin, so it keeps what it has learned across plugin updates, and it grows each time the author edits a draft or corrects a phrase. `assets/slop_check.py` enforces the slop list and the profile's banned patterns. |
 
 A plugin can carry more than one skill. Each plugin groups the builders for one brand and one
 kind of deliverable, with a skill per output format, so they share a single install and the
@@ -32,6 +33,7 @@ Add the marketplace, then install the plugin:
 /plugin install hashicorp-diagram@hashicorp-field
 /plugin install hashicorp-page@hashicorp-field
 /plugin install hashicorp-doc@hashicorp-field
+/plugin install writing-style@hashicorp-field
 ```
 
 To work on the plugins locally, point the marketplace at your clone instead:
@@ -73,6 +75,9 @@ plugins/<plugin>/
   in its template rather than naming it and hoping. `hashicorp-deck` does the same through the
   kit's own embedded Inter. To check which font a file really uses, render it and read back the
   font table of the resulting PDF, because a substitute can look close enough to pass by eye.
+- **Learned state lives outside the plugin.** A plugin directory is replaced on every update,
+  so `writing-style` keeps its profile in `~/.claude/writing-style/` and ships only the seed it
+  starts from. Every rule in the profile cites the edit or correction it came from.
 - **Generate the template, don't copy one.** `hashicorp-doc`'s `.docx` template is written by
   `assets/build_template.py` on top of python-docx's empty package rather than derived from a
   real document, so it carries no customer content, revision ids, comments or author names.
