@@ -116,6 +116,56 @@ class CurlyApostrophe(PatternCase):
     PASS = ("The soak ran for 72 hours.",)
 
 
+RESULTS = """| Run | Success | p99 |
+|---|---|---|
+| Soak | 100% | 41.2 ms |
+| Burst 1 | 100% | 88.0 ms |
+| Burst 2 | 99.8% | 120.5 ms |
+"""
+
+
+class TableEcho(PatternCase):
+    CATEGORY = "table echo"
+    FLAG = (
+        RESULTS + "\nAgainst the agreed criteria, success was 100% in the soak and both bursts.",
+        RESULTS + "\nSuccess was 100% in the soak and 99.8% in burst 2.",
+        RESULTS + "\n*Table 2. Results by run.*\n\nComparing the runs shows how much the soak held.",
+        "![Latency by layer](latency.png)\n\nThis chart shows the cache absorbing the load.",
+    )
+    PASS = (
+        # One shared number, and it explains rather than restates.
+        RESULTS + "\nBurst 2 reached 99.8% because one node restarted during the run.",
+        RESULTS + "\n## Next steps\n\nThese results set the baseline for the next soak.",
+        "This shows the names Prometheus exports.",
+    )
+
+
+CAVEAT = "The results show relative capacity rather than what the hardware will sustain."
+
+
+def sections(n, sentence):
+    return "\n".join(f"## Section {i}\n\nRun {i} used {i * 10} clients. {sentence}\n" for i in range(n))
+
+
+class Repetition(PatternCase):
+    CATEGORY = "repetition"
+    FLAG = (sections(4, CAVEAT), sections(7, CAVEAT))
+    PASS = (
+        sections(3, CAVEAT),
+        # Table rows and headings repeat by design.
+        "| Impact | High effort and low risk |\n" * 5,
+        "\n".join(f"## Capacity of the primary cluster {i}\n\nText {i}.\n" for i in range(5)),
+        # Stopwords only, and a phrase that would have to cross a full stop.
+        sections(5, "It was one of the most of the runs."),
+        sections(5, "Run it again. Capacity held steady."),
+    )
+
+    def test_reports_the_whole_phrase(self):
+        hits = [h for h in slop_check.check(sections(7, CAVEAT), []) if h[3] == "repetition"]
+        self.assertEqual(len(hits), 7)
+        self.assertEqual({h[4] for h in hits}, {CAVEAT.lower().rstrip(".")})
+
+
 # A minimal WordprocessingML package, built by hand so the tests need no python-docx.
 NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
 CONTENT_TYPES = (
@@ -166,6 +216,36 @@ FIXTURE_FOOTNOTES = (
 )
 
 
+def table(*rows):
+    cells = "".join("<w:tr>" + "".join(f"<w:tc>{para(run(c))}</w:tc>" for c in row) + "</w:tr>" for row in rows)
+    return f"<w:tbl>{cells}</w:tbl>"
+
+
+class DocxStructure(unittest.TestCase):
+    def test_table_echo_after_a_caption(self):
+        body = (para(run("Results"), style="Heading1")
+                + table(["Run", "Success"], ["Soak", "100%"], ["Burst 2", "99.8%"])
+                + para(run("Table 1. Results by run."), style="Caption")
+                + para(run("Success was 100% in the soak and 99.8% in burst 2.")))
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "echo.docx")
+            write_docx(path, body)
+            text, _, kinds = slop_check.read_docx(path)
+            hits = [h for h in slop_check.check(text, [], kinds) if h[3] == "table echo"]
+        self.assertEqual([(h[0], h[3]) for h in hits], [(9, "table echo")])
+        self.assertEqual(kinds[1], ("cell", 1))
+        self.assertEqual(kinds[7], ("caption", None))
+
+    def test_each_paragraph_is_its_own(self):
+        # In Word, adjacent paragraphs never merge into one phrase.
+        body = "".join(para(run("Capacity held relative")) + para(run("to the hardware.")) for _ in range(5))
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "split.docx")
+            write_docx(path, body)
+            text, _, kinds = slop_check.read_docx(path)
+            self.assertNotIn("repetition", [h[3] for h in slop_check.check(text, [], kinds)])
+
+
 class Docx(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.TemporaryDirectory()
@@ -181,7 +261,7 @@ class Docx(unittest.TestCase):
         return proc.returncode, proc.stdout, proc.stderr
 
     def test_paragraphs_and_cells_become_lines(self):
-        text, locations = slop_check.read_docx(self.path)
+        text, locations, _ = slop_check.read_docx(self.path)
         lines = text.split("\n")
         self.assertEqual(lines[0], "# Test Results Summary Section")
         self.assertEqual(lines[4:6], ["Region", "It is a robust design."])
@@ -189,7 +269,7 @@ class Docx(unittest.TestCase):
                          ["¶1", "¶2", "¶3", "¶4", "¶5", "¶6", "¶7", "¶10", "footnote 1"])
 
     def test_deleted_text_is_skipped(self):
-        text, _ = slop_check.read_docx(self.path)
+        text, _, _ = slop_check.read_docx(self.path)
         self.assertIn("The cache uses the token.", text)
         self.assertNotIn("leverages", text)
 

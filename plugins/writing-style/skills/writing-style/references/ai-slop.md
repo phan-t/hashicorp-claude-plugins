@@ -50,7 +50,12 @@ anything a person writes. Use the plain word, or better, the specific fact.
 - **The signposted point.** "It's worth noting that", "It's important to remember", "Notably",
   "Interestingly". If it were not worth noting it would not be in the text.
 - **The topic-sentence echo.** A closing line that restates the paragraph: "In short…",
-  "Ultimately…", "Overall…", "In conclusion…".
+  "Ultimately…", "Overall…", "In conclusion…". The same goes for the paragraph after a table or
+  figure that reads the numbers back ("Against the agreed criteria, success was 100% in the soak
+  and both bursts"). Use that paragraph for what the table cannot show: why a run failed, which
+  result matters most or what the reader should decide.
+- **The repeated caveat.** One qualifying sentence pasted into every section that needs it. Say
+  it once where it matters most and refer back to it, or cut it.
 - **The bold-label bullet.** Every bullet starting with a bolded label and a colon, used to make
   a list look structured. Use it only when readers will scan the labels, as in a reference
   table.

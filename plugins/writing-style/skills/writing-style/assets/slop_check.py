@@ -17,6 +17,11 @@ Deleted tracked changes are skipped, runs in a code style or a monospace font ar
 inline code, and code paragraphs and table-of-contents lines are not checked. Headers, footers,
 comments and text boxes are not read.
 
+Two checks read the document's structure rather than single sentences. The first flags the
+paragraph after a table or figure when it opens like a summary or repeats two or more of the
+table's measurements. The second flags a phrase of four or more words used in four or more
+paragraphs, ignoring headings and table cells. Both are review hits.
+
 The summary line counts "rather than", which reads well once and becomes a tell when it recurs.
 
 Levels:
@@ -97,6 +102,20 @@ MONO_FONTS = {"consolas", "courier", "courier new", "menlo", "monaco", "sf mono"
               "jetbrains mono", "ibm plex mono", "source code pro", "lucida console"}
 # Subtrees whose text is not the document's current prose.
 SKIP = {W + t for t in ("del", "moveFrom", "txbxContent", "pPr", "rPr", "instrText", "delInstrText")}
+# The paragraph after a table or figure restates it when it opens like a summary, or when it
+# repeats two or more of the table's measurements.
+SUMMARY_OPENER = re.compile(r"\s*(?:[-*]\s+)?(this|these|the (table|figure|chart|graph|data|numbers|results?)"
+                            r"|comparing|compared|against the|as (shown|seen|the (table|figure|chart)))\b", re.I)
+NUMBER = re.compile(r"\d[\d,]*(?:\.\d+)?%?")
+CAPTION = re.compile(r"\s*[*_]*(table|figure|fig\.) \d", re.I)
+LIST_MARKER = re.compile(r"\s*([-*+]|\d+[.)])\s+")
+WORD = re.compile(r"[a-z0-9][a-z0-9'-]*", re.I)
+# A phrase this long, used in this many paragraphs, reads as pasted.
+PHRASE_WORDS, PHRASE_PARAGRAPHS = 4, 4
+STOPWORDS = set("""a about after all also an and any are as at be because been before but by can could
+did do does each for from had has have he her his how i if in into is it its may more most no not of
+on one only or other our out over she should so some such than that the their them then there these
+they this those to under up was we were what when where which while who will with would you your""".split())
 SMALL = {"a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or", "the", "to", "vs", "via", "with"}
 
 
@@ -185,13 +204,18 @@ def _para_text(p):
     return "".join(" " * len(t) if code else t for t, code in segments)
 
 
-def _paragraphs(el):
-    """Every paragraph under el in reading order, including those in table cells."""
+def _paragraphs(el, table=None, tables=None):
+    """Every paragraph under el in reading order, with the number of the top-level table it is in."""
+    tables = tables if tables is not None else [0]
     for child in el:
         if child.tag == W + "p":
-            yield child
+            yield child, table
         elif child.tag not in SKIP:
-            yield from _paragraphs(child)
+            inner = table
+            if child.tag == W + "tbl" and table is None:
+                tables[0] += 1
+                inner = tables[0]
+            yield from _paragraphs(child, inner, tables)
 
 
 def _para_style(p):
@@ -209,7 +233,11 @@ def _has_text(p):
 
 
 def read_docx(path):
-    """Return (text, locations) for a .docx, where locations[i] is (label, column offset) for line i+1."""
+    """Return (text, locations, kinds) for a .docx.
+
+    locations[i] is (label, column offset) for line i+1, and kinds[i] is what that line is, as
+    classify() describes. Each paragraph is one line, so each line is its own paragraph.
+    """
     try:
         with zipfile.ZipFile(path) as z:
             names = set(z.namelist())
@@ -220,12 +248,16 @@ def read_docx(path):
     if "word/document.xml" not in parts:
         raise ValueError(f"{path}: not a Word file (no word/document.xml)")
 
-    lines, locations = [], []
+    lines, locations, kinds = [], [], []
     body = ET.fromstring(parts["word/document.xml"]).find(W + "body")
     count = 0
-    for p in _paragraphs(body):
+    for p, table in _paragraphs(body):
         # Count from the raw text, so a paragraph of code still takes a number.
         if not _has_text(p):
+            if next(p.iter(W + "drawing"), None) is not None or next(p.iter(W + "pict"), None) is not None:
+                lines.append("")
+                locations.append(("figure", 0))
+                kinds.append(("figure", None))
             continue
         count += 1
         style = _para_style(p)
@@ -234,6 +266,8 @@ def read_docx(path):
         prefix = _heading_prefix(style)
         lines.append(prefix + _para_text(p))
         locations.append((f"\u00b6{count}", len(prefix)))
+        kind = "cell" if table else "heading" if prefix else "caption" if style == "caption" else "prose"
+        kinds.append((kind, table))
 
     for kind in ("footnote", "endnote"):
         part = parts.get(f"word/{kind}s.xml")
@@ -247,11 +281,158 @@ def read_docx(path):
             if note.get(W + "type") in ("separator", "continuationSeparator", "continuationNotice"):
                 continue
             label = f"{kind} {shown.get(note.get(W + 'id'), note.get(W + 'id'))}"
-            for p in _paragraphs(note):
+            for p, _ in _paragraphs(note):
                 if _has_text(p) and not UNCHECKED_PARA_STYLE.fullmatch(_para_style(p)):
                     lines.append(_para_text(p))
                     locations.append((label, 0))
-    return "\n".join(lines), locations
+                    kinds.append(("note", None))
+    return "\n".join(lines), locations, kinds
+
+
+def classify(lines):
+    """Describe each Markdown or plain-text line as (kind, table number).
+
+    Kinds are prose, heading, cell (a table row), figure (an image), caption and blank. Each run
+    of table rows is one table. Word files get the same description from read_docx().
+    """
+    kinds, table, in_table = [], 0, False
+    for line in lines:
+        stripped = line.strip()
+        is_row = stripped.startswith("|")
+        if is_row and not in_table:
+            table += 1
+        in_table = is_row
+        if is_row:
+            kinds.append(("cell", table))
+        elif not stripped:
+            kinds.append(("blank", None))
+        elif HEADING.match(line):
+            kinds.append(("heading", None))
+        elif stripped.startswith("!["):
+            kinds.append(("figure", None))
+        elif CAPTION.match(line):
+            kinds.append(("caption", None))
+        else:
+            kinds.append(("prose", None))
+    return kinds
+
+
+def _paragraph_spans(lines, kinds, docx):
+    """Group prose lines into paragraphs, as lists of line indices."""
+    spans, current = [], []
+    for i, (kind, _) in enumerate(kinds):
+        prose = kind in ("prose", "note")
+        if not prose or docx or LIST_MARKER.match(lines[i]):
+            if current:
+                spans.append(current)
+            current = []
+        if prose:
+            current.append(i)
+    if current:
+        spans.append(current)
+    return spans
+
+
+def _measurements(text):
+    """The numbers in text that look like results: percentages, decimals and 3+ digit values."""
+    found = set()
+    for m in NUMBER.finditer(text):
+        raw = m.group(0).rstrip(",")
+        digits = raw.replace(",", "").rstrip("%")
+        if "%" in raw or "." in digits or len(digits) >= 3:
+            found.add(digits)
+    return found
+
+
+def table_echoes(lines, kinds, spans):
+    """Review hits for a paragraph that follows a table or figure and restates it."""
+    hits = []
+    starts = {span[0]: span for span in spans}
+    i = 0
+    while i < len(kinds):
+        kind, table = kinds[i]
+        if kind not in ("cell", "figure"):
+            i += 1
+            continue
+        end = i
+        while end + 1 < len(kinds) and kinds[end + 1][0] == kind and kinds[end + 1][1] == table:
+            end += 1
+        shown = _measurements(" ".join(lines[i:end + 1])) if kind == "cell" else set()
+        nxt = end + 1
+        while nxt < len(kinds) and kinds[nxt][0] in ("blank", "caption"):
+            nxt += 1
+        if nxt in starts:
+            span = starts[nxt]
+            text = " ".join(lines[j].strip() for j in span)
+            repeated = shown & _measurements(text)
+            if SUMMARY_OPENER.match(lines[nxt]) or len(repeated) >= 2:
+                col = len(lines[nxt]) - len(lines[nxt].lstrip()) + 1
+                snippet = text if len(text) <= 60 else text[:60].rsplit(" ", 1)[0] + "..."
+                hits.append((nxt + 1, col, "review", "table echo", snippet,
+                             f"say what the {'table' if kind == 'cell' else 'figure'} does not: the cause, "
+                             "the exception or the decision"))
+        i = end + 1
+    return hits
+
+
+def repeated_phrases(lines, spans):
+    """Review hits for each use of a phrase of PHRASE_WORDS+ words found in PHRASE_PARAGRAPHS+ paragraphs."""
+    # Words per paragraph, as (word, line, column, starts_run). A run breaks at sentence
+    # punctuation and at masked code, so a phrase never spans either.
+    paragraphs = []
+    for span in spans:
+        words, gap = [], ""
+        for j in span:
+            line = lines[j]
+            marker = LIST_MARKER.match(line)
+            pos = marker.end() if marker else 0
+            gap += " "
+            for m in WORD.finditer(line, pos):
+                gap += line[pos:m.start()]
+                breaks = bool(re.search(r"[.!?;:()\[\]|\"]", gap)) or "  " in gap.strip("\n")
+                words.append((m.group(0).lower(), j, m.start() + 1, breaks or not words))
+                pos, gap = m.end(), ""
+            gap = line[pos:]
+        paragraphs.append(words)
+
+    def grams(words):
+        for k in range(len(words) - PHRASE_WORDS + 1):
+            window = words[k:k + PHRASE_WORDS]
+            if not any(w[3] for w in window[1:]):
+                yield k, tuple(w[0] for w in window)
+
+    def has_content(key):
+        return sum(w in STOPWORDS for w in key) < PHRASE_WORDS - 1
+
+    seen = {}
+    for n, words in enumerate(paragraphs):
+        for _, key in grams(words):
+            seen.setdefault(key, set()).add(n)
+    hot = {key: len(ps) for key, ps in seen.items() if len(ps) >= PHRASE_PARAGRAPHS}
+
+    hits = []
+    for words in paragraphs:
+        # Overlapping repeated windows merge into one phrase, which is reported if any of its
+        # windows carries content words, so "at the end of" alone never counts.
+        runs, run = [], None
+        for k, key in grams(words):
+            if key not in hot:
+                continue
+            if run and k <= run[1]:
+                run = [run[0], k + PHRASE_WORDS - 1, max(run[2], hot[key]), run[3] or has_content(key)]
+            else:
+                if run:
+                    runs.append(run)
+                run = [k, k + PHRASE_WORDS - 1, hot[key], has_content(key)]
+        if run:
+            runs.append(run)
+        for a, b, uses, content in runs:
+            if not content:
+                continue
+            phrase = " ".join(w[0] for w in words[a:b + 1])
+            hits.append((words[a][1] + 1, words[a][2], "review", "repetition", phrase,
+                         f"used in {uses} paragraphs; keep it where it matters most"))
+    return hits
 
 
 def is_title_case(heading):
@@ -260,7 +441,12 @@ def is_title_case(heading):
     return len(content) >= 2 and all(w[0].isupper() for w in content) and not all(w.isupper() for w in content)
 
 
-def check(text, profile_patterns):
+def check(text, profile_patterns, kinds=None):
+    """Return hits as (line, column, level, category, match, suggestion).
+
+    kinds describes each line, as read_docx() returns it; without it the text is read as
+    Markdown or plain text.
+    """
     # Curly apostrophes and non-breaking spaces, as Word types them, would slip past patterns
     # such as "it's" and "dive into". Each swap is one character for one, so columns hold.
     masked = mask_code(text)
@@ -297,6 +483,12 @@ def check(text, profile_patterns):
         h = HEADING.match(line)
         if h and is_title_case(h.group(1)):
             hits.append((i, 1, "review", "title case", h.group(1), "sentence case"))
+
+    docx = kinds is not None
+    kinds = kinds if docx else classify(lines)
+    spans = _paragraph_spans(lines, kinds, docx)
+    hits += table_echoes(lines, kinds, spans)
+    hits += repeated_phrases(lines, spans)
     hits.sort()
     return hits
 
@@ -314,13 +506,13 @@ def main():
     rather_than = words = 0
     unreadable = False
     for path in args.files:
-        locations = None
+        locations = kinds = None
         if path == "-":
             name, text = "<stdin>", sys.stdin.read()
         elif path.lower().endswith((".docx", ".docm", ".dotx")):
             name = path
             try:
-                text, locations = read_docx(path)
+                text, locations, kinds = read_docx(path)
             except (ValueError, ET.ParseError, OSError) as e:
                 print(f"error: {e}", file=sys.stderr)
                 unreadable = True
@@ -341,7 +533,7 @@ def main():
         prose = mask_code(text)
         rather_than += len(re.findall(r"\brather than\b", prose, re.I))
         words += len(re.findall(r"[A-Za-z0-9][\w'\u2019-]*", prose))
-        for ln, col, level, category, match, hint in check(text, profile_patterns):
+        for ln, col, level, category, match, hint in check(text, profile_patterns, kinds):
             counts[level] += 1
             if locations:
                 label, offset = locations[ln - 1]
