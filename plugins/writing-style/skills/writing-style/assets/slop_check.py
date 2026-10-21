@@ -6,9 +6,18 @@ Usage:
     slop_check.py - < draft.txt
     slop_check.py --profile path/to/profile.md FILE
     slop_check.py --strict FILE     # review hits also fail
+    slop_check.py report.docx       # Word files are read directly
 
 Fenced code, inline code and double-quoted phrases are skipped, so identifiers, commands and
 words quoted as examples are never flagged.
+
+A .docx is read from its body, footnotes and endnotes, with each paragraph and table cell
+becoming one line. Hits are located as ¶N (the Nth paragraph with text) or "footnote N".
+Deleted tracked changes are skipped, runs in a code style or a monospace font are treated as
+inline code, and code paragraphs and table-of-contents lines are not checked. Headers, footers,
+comments and text boxes are not read.
+
+The summary line counts "rather than", which reads well once and becomes a tell when it recurs.
 
 Levels:
     slop     always fix
@@ -16,13 +25,15 @@ Levels:
     review   a judgement call; fix unless the context earns it
 
 Exits 1 when any slop or profile hit is found (or any hit at all with --strict), so the check
-can sit in a script or hook. Standard library only.
+can sit in a script or hook, and 2 when a file cannot be read. Standard library only.
 """
 
 import argparse
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
+import zipfile
 
 DEFAULT_PROFILE = os.path.join("~", ".claude", "writing-style", "profile.md")
 
@@ -42,7 +53,11 @@ BUILTIN = [
     (r"\bembark(s|ed|ing)?\b|\bjourney\b", "slop", "vocabulary", "project, migration, rollout"),
     (r"\b(realm|landscape)\b", "review", "vocabulary", "name the actual field or market"),
     (r"\bempower(s|ed|ing)?\b|\bunlock(s|ed|ing)?\b|\belevat(e|es|ed|ing)\b", "slop", "vocabulary", "say what the reader can now do"),
-    (r"\bfoster(s|ed|ing)?\b|\bshowcas(e|es|ed|ing)\b|\bunderscor(e|es|ed|ing)\b|\bboasts?\b", "slop", "vocabulary", "build, show, confirm, have"),
+    (r"\bfoster(s|ed|ing)?\b|\bshowcas(e|es|ed|ing)\b|\bboasts?\b", "slop", "vocabulary", "build, show, confirm, have"),
+    # The verb only, told apart by what follows it: "underscores the need" against "contain underscores".
+    (r"(?<!\ban )(?<!\bthe )(?<!\ba )\bunderscor(e|es|ed|ing)\b"
+     r"(?= (the|that|how|why|what|its|this|our|their|a|an|by|just|again|both|rather|once)\b)",
+     "slop", "vocabulary", "show, confirm"),
     (r"\b(robust|comprehensive|holistic)\b", "review", "vocabulary", "say what it covers or survives"),
     (r"\b(crucial|vital|pivotal)\b", "review", "vocabulary", "say what breaks without it"),
     (r"\bstreamlin(e|es|ed|ing)\b|\bsynerg(y|ies)\b|\bparadigm\b", "slop", "vocabulary", "say what changed, by how much"),
@@ -54,6 +69,9 @@ BUILTIN = [
     (r"\b(isn't|is not|wasn't|was not) about [^.!?]{1,60}[.;] (it's|it is|it was) about\b", "slop", "false contrast", "state the claim directly"),
     (r"\bit'?s (worth noting|important to (note|remember|understand))\b|\bnotably\b|\binterestingly\b", "slop", "signposting", "delete the signpost"),
     (r"(^|[.!?]\s+)(in short|in summary|in conclusion|ultimately|overall|at the end of the day)\b", "slop", "echo", "delete the restatement"),
+    (r"\b(doesn't|don't|does not|do not|didn't|did not) support the (reasoning|idea|view|assumption|claim|notion|hypothesis) that\b",
+     "review", "strawman", "state what the results showed, unless someone really held the view"),
+    (r"\bcontrary to (popular|common)\b|\bcommon misconception\b", "slop", "strawman", "state the finding"),
     (r"\bwhether you'?re (a |an )?", "slop", "opener", "address the actual reader"),
     (r"(^|[.!?]\s+)(?-i:[A-Z])[\w' -]{0,40}, not (a |an |the )?[\w' -]{1,40}\.", "review", "slogan fragment", "make it a sentence with 'rather than'"),
     (r"(?-i:\b[A-Z][a-z]+\. [A-Z][a-z]+\. [A-Z][a-z]+\.)", "slop", "slogan triple", "one sentence that says which, and why"),
@@ -64,11 +82,21 @@ BUILTIN = [
     # Hedging and intensifiers
     (r"\b(could|may|might) (potentially|possibly|perhaps)\b", "slop", "stacked hedge", "one hedge, or a plain claim"),
     (r"\b(very|really|truly|incredibly|extremely)\b", "review", "intensifier", "the number that makes it true"),
+    (r"\b(effectively|essentially|arguably|virtually)\b", "review", "hedge adverb", "the number or fact it stands in for"),
     (r"\b(simply|obviously|easily)\b", "review", "condescension", "cut it"),
 ]
 
 EMOJI = re.compile("[\U0001F300-\U0001FAFF☀-➿⭐✅]")
 HEADING = re.compile(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$")
+W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+CODE_STYLES = {"code", "htmlcode", "verbatimchar", "sourcecode", "inlinecode"}
+# Paragraph styles that hold code, or text generated from elsewhere in the document.
+UNCHECKED_PARA_STYLE = re.compile(r"code|codeblock|sourcecode|htmlpreformatted|plaintext|macrotext"
+                                  r"|toc ?\d|tableoffigures")
+MONO_FONTS = {"consolas", "courier", "courier new", "menlo", "monaco", "sf mono", "space mono",
+              "jetbrains mono", "ibm plex mono", "source code pro", "lucida console"}
+# Subtrees whose text is not the document's current prose.
+SKIP = {W + t for t in ("del", "moveFrom", "txbxContent", "pPr", "rPr", "instrText", "delInstrText")}
 SMALL = {"a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or", "the", "to", "vs", "via", "with"}
 
 
@@ -113,6 +141,119 @@ def mask_code(text):
     return "\n".join(out)
 
 
+def _run_is_code(run):
+    rpr = run.find(W + "rPr")
+    if rpr is None:
+        return False
+    style = rpr.find(W + "rStyle")
+    if style is not None and style.get(W + "val", "").lower() in CODE_STYLES:
+        return True
+    fonts = rpr.find(W + "rFonts")
+    return fonts is not None and any(
+        (fonts.get(W + a) or "").lower() in MONO_FONTS for a in ("ascii", "hAnsi"))
+
+
+def _para_text(p):
+    """A paragraph's current text, with code runs blanked to spaces so columns stay exact."""
+    segments = []  # [text, is_code], merged as runs are added
+
+    def add(text, code):
+        if not text:
+            return
+        if segments and segments[-1][1] == code:
+            segments[-1][0] += text
+        else:
+            segments.append([text, code])
+
+    def walk(el):
+        for child in el:
+            if child.tag in SKIP:
+                continue
+            if child.tag == W + "r":
+                code = _run_is_code(child)
+                for part in child:
+                    if part.tag == W + "t":
+                        add(part.text or "", code)
+                    elif part.tag in (W + "tab", W + "br", W + "cr"):
+                        add(" ", code)
+                    elif part.tag == W + "noBreakHyphen":
+                        add("-", code)
+            else:
+                walk(child)  # hyperlinks, fields, inserted text, content controls
+
+    walk(p)
+    return "".join(" " * len(t) if code else t for t, code in segments)
+
+
+def _paragraphs(el):
+    """Every paragraph under el in reading order, including those in table cells."""
+    for child in el:
+        if child.tag == W + "p":
+            yield child
+        elif child.tag not in SKIP:
+            yield from _paragraphs(child)
+
+
+def _para_style(p):
+    style = p.find(f"{W}pPr/{W}pStyle")
+    return (style.get(W + "val", "") if style is not None else "").lower()
+
+
+def _heading_prefix(style):
+    m = re.fullmatch(r"heading ?([1-6])", style)
+    return "#" * int(m.group(1)) + " " if m else ""
+
+
+def _has_text(p):
+    return any((t.text or "").strip() for t in p.iter(W + "t"))
+
+
+def read_docx(path):
+    """Return (text, locations) for a .docx, where locations[i] is (label, column offset) for line i+1."""
+    try:
+        with zipfile.ZipFile(path) as z:
+            names = set(z.namelist())
+            parts = {n: z.read(n) for n in ("word/document.xml", "word/footnotes.xml", "word/endnotes.xml")
+                     if n in names}
+    except zipfile.BadZipFile:
+        raise ValueError(f"{path}: not a Word file (it is not a zip archive)")
+    if "word/document.xml" not in parts:
+        raise ValueError(f"{path}: not a Word file (no word/document.xml)")
+
+    lines, locations = [], []
+    body = ET.fromstring(parts["word/document.xml"]).find(W + "body")
+    count = 0
+    for p in _paragraphs(body):
+        # Count from the raw text, so a paragraph of code still takes a number.
+        if not _has_text(p):
+            continue
+        count += 1
+        style = _para_style(p)
+        if UNCHECKED_PARA_STYLE.fullmatch(style):
+            continue
+        prefix = _heading_prefix(style)
+        lines.append(prefix + _para_text(p))
+        locations.append((f"\u00b6{count}", len(prefix)))
+
+    for kind in ("footnote", "endnote"):
+        part = parts.get(f"word/{kind}s.xml")
+        if part is None:
+            continue
+        # Word numbers notes by the order they are referenced, which need not match their ids.
+        shown = {}
+        for ref in body.iter(f"{W}{kind}Reference"):
+            shown.setdefault(ref.get(W + "id"), len(shown) + 1)
+        for note in ET.fromstring(part).findall(W + kind):
+            if note.get(W + "type") in ("separator", "continuationSeparator", "continuationNotice"):
+                continue
+            label = f"{kind} {shown.get(note.get(W + 'id'), note.get(W + 'id'))}"
+            for p in _paragraphs(note):
+                if _has_text(p) and not UNCHECKED_PARA_STYLE.fullmatch(_para_style(p)):
+                    lines.append(_para_text(p))
+                    locations.append((label, 0))
+    return "\n".join(lines), locations
+
+
 def is_title_case(heading):
     words = [w for w in re.findall(r"[A-Za-z][\w'-]*", heading)]
     content = [w for w in words[1:] if w.lower() not in SMALL and len(w) > 3]
@@ -120,7 +261,11 @@ def is_title_case(heading):
 
 
 def check(text, profile_patterns):
+    # Curly apostrophes and non-breaking spaces, as Word types them, would slip past patterns
+    # such as "it's" and "dive into". Each swap is one character for one, so columns hold.
     masked = mask_code(text)
+    for typed, plain in (("\u2019", "'"), ("\u2018", "'"), ("\u00a0", " "), ("\u202f", " ")):
+        masked = masked.replace(typed, plain)
     lines = masked.split("\n")
     starts, pos = [], 0
     for line in lines:
@@ -138,7 +283,7 @@ def check(text, profile_patterns):
         return lo + 1, offset - starts[lo] + 1
 
     hits = []
-    rules = [(re.compile(r, re.I), lvl, cat, hint) for r, lvl, cat, hint in BUILTIN]
+    rules = [(re.compile(r, re.I | re.M), lvl, cat, hint) for r, lvl, cat, hint in BUILTIN]
     rules += [(rx, "profile", "profile", hint) for rx, hint in profile_patterns]
     for rx, level, category, hint in rules:
         for m in rx.finditer(masked):
@@ -166,23 +311,53 @@ def main():
 
     profile_patterns = [] if args.no_profile else load_profile_patterns(args.profile)
     counts = {"slop": 0, "profile": 0, "review": 0}
+    rather_than = words = 0
+    unreadable = False
     for path in args.files:
+        locations = None
         if path == "-":
             name, text = "<stdin>", sys.stdin.read()
+        elif path.lower().endswith((".docx", ".docm", ".dotx")):
+            name = path
+            try:
+                text, locations = read_docx(path)
+            except (ValueError, ET.ParseError, OSError) as e:
+                print(f"error: {e}", file=sys.stderr)
+                unreadable = True
+                continue
         else:
             name = path
-            with open(path, encoding="utf-8") as f:
-                text = f.read()
+            try:
+                with open(path, encoding="utf-8") as f:
+                    text = f.read()
+            except UnicodeDecodeError:
+                print(f"error: {path}: not UTF-8 text (a .doc must be saved as .docx first)", file=sys.stderr)
+                unreadable = True
+                continue
+            except OSError as e:
+                print(f"error: {e}", file=sys.stderr)
+                unreadable = True
+                continue
+        prose = mask_code(text)
+        rather_than += len(re.findall(r"\brather than\b", prose, re.I))
+        words += len(re.findall(r"[A-Za-z0-9][\w'\u2019-]*", prose))
         for ln, col, level, category, match, hint in check(text, profile_patterns):
             counts[level] += 1
-            print(f'{name}:{ln}:{col}: {level:<7} [{category}] "{match}" -> {hint}')
+            if locations:
+                label, offset = locations[ln - 1]
+                where = f"{label}:{max(col - offset, 1)}"
+            else:
+                where = f"{ln}:{col}"
+            print(f'{name}:{where}: {level:<7} [{category}] "{match}" -> {hint}')
 
     total = sum(counts.values())
+    # "rather than" is fine once and a tell when it recurs, so it is counted for the author to judge.
     print(f"\n{counts['slop']} slop, {counts['profile']} profile, {counts['review']} review"
+          + f'; "rather than" x{rather_than} in {words:,} words'
           + ("" if profile_patterns or args.no_profile else " (no profile patterns loaded)"),
           file=sys.stderr)
     failing = total if args.strict else counts["slop"] + counts["profile"]
-    sys.exit(1 if failing else 0)
+    sys.exit(2 if unreadable else 1 if failing else 0)
 
 
 if __name__ == "__main__":

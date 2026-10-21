@@ -37,6 +37,10 @@ anything a person writes. Use the plain word, or better, the specific fact.
 
 - **The false contrast.** "It's not just X, it's Y." "Not only X but also Y." "This isn't
   about X. It's about Y." These set up a claim nobody made in order to knock it down.
+- **Arguing against a view nobody stated.** "These results don't support the reasoning that
+  more voters slow writes" refutes a position the reader never saw. Say what the results showed:
+  "The voter count made no measurable difference to write performance." If the customer did
+  hold the view, name them and the view before answering it.
 - **The slogan fragment.** "Fast. Reliable. Secure." "A document, not a deck." Fold it into a
   sentence that has a subject and a reason.
 - **The reflexive triple.** Three adjectives or three parallel clauses because three sounds
@@ -64,6 +68,9 @@ Text that belongs to a conversation with an assistant and leaks into the artefac
 
 - Stacked hedges ("could potentially", "may possibly", "might perhaps") mean one hedge or a
   plain claim. If you are unsure, say what you are unsure of and why.
+- Hedge adverbs ("effectively", "essentially", "arguably", "virtually") soften a claim the
+  writer could have measured. "Effectively none of the 100,000 cached certificates was
+  re-issued" hid a count the results had, so give the count.
 - Intensifiers ("very", "really", "truly", "incredibly", "extremely", "highly") usually weaken
   the claim. Replace with the number that makes it true.
 - "Simply", "just", "easily" and "obviously" in instructions tell a reader who is stuck that the

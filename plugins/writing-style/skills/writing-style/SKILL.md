@@ -40,11 +40,15 @@ Run the checker over every piece of prose before handing it over:
 ```
 python3 assets/slop_check.py <file> [<file> ...]
 python3 assets/slop_check.py - < draft.txt
+python3 assets/slop_check.py report.docx
 ```
 
 For text that is going into chat, a commit message or a tool rather than a file, write it to a
 scratch file first and check that. The checker skips fenced code, inline code and double-quoted phrases, and it reads
-the profile's banned patterns automatically (`--profile` overrides the path).
+the profile's banned patterns automatically (`--profile` overrides the path). A Word file is
+read directly, and its hits are located by paragraph (`¶42`) or footnote instead of by line.
+The summary line also counts "rather than", because a contrast used in every other paragraph
+becomes its own tell.
 
 - **`slop` hits** are fixed, every time.
 - **`review` hits** are judgement calls. Fix them unless the context earns the word, such as
