@@ -47,6 +47,13 @@ anything a person writes. Use the plain word, or better, the specific fact.
   finished. Keep the ones that are true and specific, which is often one.
 - **The em dash bolt-on.** "…the deployment model — simple, repeatable and auditable." The dash
   attaches a fragment that should either be its own sentence or be cut.
+- **The balanced pair.** Two clauses built to mirror each other: "Vault fixes the
+  credential. Boundary fixes the path." "The controller decides, workers act." The symmetry is
+  doing the work the facts should do. Say what each part does in whatever shape is true.
+- **The stock opener.** "And it's getting harder." "Here's the thing." "The reality is…" A
+  sentence that builds drama before the point. Start with the point.
+- **The slogan label.** A card title or phase name written as a tagline: "Nothing hidden",
+  "Every zone, every actor", "The pain" and "The benefit". Name the literal thing.
 - **The signposted point.** "It's worth noting that", "It's important to remember", "Notably",
   "Interestingly". If it were not worth noting it would not be in the text.
 - **The topic-sentence echo.** A closing line that restates the paragraph: "In short…",

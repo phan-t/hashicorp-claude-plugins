@@ -93,6 +93,19 @@ class Strawman(PatternCase):
     )
 
 
+class StockOpener(PatternCase):
+    CATEGORY = "stock opener"
+    FLAG = (
+        "And it's getting harder. Contractors now use the same paths.",
+        "Here's the thing: the keys never rotate.",
+        "The reality is that most rules are per subnet.",
+    )
+    PASS = (
+        "Contractors, automation and AI agents now use the same paths.",
+        "Rotation is getting harder to schedule as the estate grows.",
+    )
+
+
 class LineStart(PatternCase):
     """Patterns anchored to a sentence start also fire at the start of a line."""
 

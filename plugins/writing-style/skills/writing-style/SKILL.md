@@ -57,6 +57,25 @@ becomes its own tell.
   sentence that says nothing still leaves a sentence that says nothing. If a fix makes the
   sentence worse, the sentence was the problem.
 
+## Reading pass
+
+A clean checker run is not the end of the check. Regexes catch vocabulary and fixed phrases,
+but not idiom, a balanced pair written for rhythm, a slogan used as a label or a closing line
+that repeats what the reader just saw. After the checker, read the final text once against
+each section of `references/ai-slop.md` and each rule in the profile:
+
+1. **Read everything a reader will see,** including headings, labels, card titles, column
+   headers, captions and diagram text. Labels follow the same rules as sentences.
+2. **Read text you carried over from a source** as closely as text you wrote. A rebuild or
+   an edit inherits the source's slop unless someone removes it.
+3. **Reread your own fixes.** Swapping one pattern for another (every "X, not Y" becoming
+   "rather than") makes a new tell.
+4. **Ask of each closing line** whether it says anything the slide, table or paragraph above
+   it did not. If not, cut it.
+
+Do this pass even when the checker reports nothing. Fix what it finds, then run the checker
+again, because a rewrite can introduce a pattern the regexes do catch.
+
 Do not mention the checker or the profile in the prose itself. Report to the user only if
 something needs their decision.
 

@@ -78,6 +78,8 @@ BUILTIN = [
      "review", "strawman", "state what the results showed, unless someone really held the view"),
     (r"\bcontrary to (popular|common)\b|\bcommon misconception\b", "slop", "strawman", "state the finding"),
     (r"\bwhether you'?re (a |an )?", "slop", "opener", "address the actual reader"),
+    (r"(^|[.!?]\s+)(and it'?s (only )?getting (harder|worse)|here'?s the thing|the (reality|truth) is|"
+     r"make no mistake|let'?s be (clear|honest)|the bottom line is)\b", "slop", "stock opener", "start with the point"),
     (r"(^|[.!?]\s+)(?-i:[A-Z])[\w' -]{0,40}, not (a |an |the )?[\w' -]{1,40}\.", "review", "slogan fragment", "make it a sentence with 'rather than'"),
     (r"(?-i:\b[A-Z][a-z]+\. [A-Z][a-z]+\. [A-Z][a-z]+\.)", "slop", "slogan triple", "one sentence that says which, and why"),
     (r"\s—\s|\w—\w", "review", "em dash", "a comma, 'which', 'so' or a full stop"),
