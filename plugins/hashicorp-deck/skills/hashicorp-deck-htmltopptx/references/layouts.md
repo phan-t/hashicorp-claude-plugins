@@ -16,7 +16,7 @@ the traps that make text land in the wrong place.
 | `eyebrow(title, eyebrow)` | Eyebrow Title | title with a small label *above* it |
 | `quote(text, attribution)` | Quote-3lines | one slot, in the glow gradient |
 | `body(title, prose, bullets, subtitle)` | Content- body + bullet list | prose left, bullets right |
-| `columns(title, columns, subtitle, headings)` | Content - N-column bullet / Icon Text Container | 2–4 columns |
+| `columns(title, columns, subtitle, headings, icons)` | Content - N-column bullet / Icon Text Container | 2–4 columns |
 | `metrics(cards, title, subtitle)` | 2 Metric / 3 Metric | number + caption per card |
 | `image(title, path, subtitle, body, style)` | Image Overlay - small right/left/large | picture + copy |
 | `speaker(name, lines, image)` | Speaker-1 | name, detail lines, portrait |
@@ -114,9 +114,32 @@ Item text is idx 1–6 and the page numbers are idx 11–16, but idx **16** sits
 not idx 6. `agenda()` therefore reads both runs in vertical order and zips them, which
 pairs them correctly whatever the indices say. Six items maximum; asking for more raises.
 
+## Trap 7: the icon squares are layout art, not placeholders
+
+Each Icon Text Container layout draws a 0.46 in rounded square, in a pastel gradient, above
+every column. They are layout shapes, so they inherit onto the slide and nothing can be put
+*in* them; a deck that never draws over them ships empty boxes.
+
+`columns(..., icons=["key", "user-plus", "eye"])` draws one Flight icon per column, centred
+on each square at 0.28 in. `Deck.icon_squares()` finds the squares on the layout and sorts
+them left to right. The icon is a vector freeform, converted from Flight's SVG path data by
+`flight_icons.py`, so it needs no rasteriser and stays editable in PowerPoint. The square is
+the same in the light and dark kits, so the icon is black in both.
+
+- `icons` must name one icon per column. An unknown name raises `KeyError` with the nearest
+  names, before any slide is added.
+- `icons` alone selects the icon layout, as `headings` does. On `dark-v2`, which has no icon
+  layout, it raises.
+- Leaving out `icons` on an icon layout still works, but it adds a warning to
+  `Deck.warnings` for the empty squares.
+- `Deck.icon(slide, name, left, top, size)` draws an icon anywhere else.
+
+Search the 552 names by keyword with `python3 ../../assets/icons/flight.py search <word>`.
+Match the icon to what the column says, which is not always what its heading names.
+
 ## Column capacity
 
-| Columns | Without headings | With headings |
+| Columns | Without headings | With headings or icons |
 |---|---|---|
 | 1–2 | Content- body + bullet list | Icon Text Container - 2-column |
 | 3 | Content - 3-column bullet | Icon Text Container - 3-column |

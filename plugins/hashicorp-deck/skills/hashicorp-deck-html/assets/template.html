@@ -62,6 +62,11 @@
   .card .num{font-size:clamp(2rem,3.4vw,2.8rem);font-weight:700;letter-spacing:-.03em;line-height:1;}
   .card .cap{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray-500);margin-top:.7rem;}
   .card .desc{font-size:.95rem;color:var(--gray-700);margin-top:.8rem;} .dark .card .desc{color:var(--gray-300);}
+  /* Feature card icon: a Flight icon in the kit's pastel icon square. The square is the same
+     on light and dark slides, so the icon stays --ink on both. */
+  .card .ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--ink);background:linear-gradient(135deg,#a8b5ff 0%,#cfa9fc 22%,#fdafb5 75%,#ffeeb1 99%);}
+  .card .ico svg{width:24px;height:24px;display:block;}
+  .card .ico+h3{margin-top:1.3rem;font-size:clamp(1.05rem,1.6vw,1.25rem);}
 
   .fix{border-left:3px solid var(--tf-purple);padding:1rem 0 1rem 1.4rem;margin-top:1.6rem;}
   .dark .fix{border-left-color:var(--tf-purple-bright);}
@@ -113,6 +118,31 @@
     <p class="lede reveal">Supporting framing sentence.</p>
     <div class="secttag">01 — Section</div>
     <div class="pagenum">02</div>
+  </section>
+
+  <!-- EXAMPLE FEATURE CARDS: one Flight icon each (assets/icons/flight.py ico <name>) -->
+  <section class="slide paper" data-name="Features">
+    <div class="eyebrow reveal">Section label</div>
+    <h2 class="reveal" style="max-width:20ch;">Three things, one icon each</h2>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="ico" data-icon="key"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M15.328 1c2.049 0 3.98.799 5.429 2.247a7.72 7.72 0 0 1 2.177 6.444l-.001.001a7.73 7.73 0 0 1-3.8 5.642 7.7 7.7 0 0 1-3.812 1.013 7.7 7.7 0 0 1-2.551-.438l-1.04 1.04c-.226.236-.54.37-.865.37H9.601v1.088c-.008.35-.146.676-.383.927l-.007.007a1.36 1.36 0 0 1-.97.408H7.155v1.22c.01.323-.11.63-.33.867l-.945.944a.75.75 0 0 1-.53.22H1.75a.75.75 0 0 1-.75-.75v-3.616c0-.199.08-.39.22-.53l6.869-6.868a7.72 7.72 0 0 1 .572-6.369 7.72 7.72 0 0 1 5.646-3.799c.34-.047.684-.068 1.021-.068m0 1.5q-.415 0-.817.055h-.004a6.22 6.22 0 0 0-4.543 3.057 6.22 6.22 0 0 0-.33 5.464.83.83 0 0 1-.179.915L2.5 18.945V21.5h2.54l.616-.616v-1.6c0-.564.457-1.035 1.034-1.035H8.1v-1.396c0-.564.457-1.035 1.035-1.035h1.604l1.281-1.282a.834.834 0 0 1 .904-.174 6.17 6.17 0 0 0 5.465-.33 6.22 6.22 0 0 0 3.057-4.54 6.22 6.22 0 0 0-1.75-5.184A6.13 6.13 0 0 0 15.327 2.5m.674 2.5a2.999 2.999 0 1 1-2.772 4.148l-.002-.002a2.99 2.99 0 0 1 .653-3.27A2.98 2.98 0 0 1 16.002 5m0 1.5a1.48 1.48 0 0 0-1.062.438v.001a1.49 1.49 0 0 0-.325 1.633 1.497 1.497 0 0 0 2.446.489 1.498 1.498 0 0 0-1.059-2.56"/></svg></div>
+        <h3>Short-lived credentials</h3>
+        <p class="desc">One sentence on what this column means for the reader.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico" data-icon="user-plus"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M13.25 14.5A4.75 4.75 0 0 1 18 19.25v1a.75.75 0 0 1-1.5 0v-1A3.25 3.25 0 0 0 13.25 16h-8.5a3.25 3.25 0 0 0-3.25 3.25v1a.75.75 0 0 1-1.5 0v-1a4.75 4.75 0 0 1 4.75-4.75zm6-6.75a.75.75 0 0 1 .75.75v2h2a.75.75 0 0 1 0 1.5h-2v2a.75.75 0 0 1-1.5 0v-2h-2a.75.75 0 0 1 0-1.5h2v-2a.75.75 0 0 1 .75-.75M9 3a5 5 0 1 1 0 10A5 5 0 0 1 9 3m0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7"/></svg></div>
+        <h3>Self-service access</h3>
+        <p class="desc">One sentence on what this column means for the reader.</p>
+      </div>
+      <div class="card reveal">
+        <div class="ico" data-icon="eye"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3c3.864 0 6.86 2.088 8.85 4.162 1 1.042 1.767 2.1 2.286 2.936.259.417.46.785.6 1.074.069.143.127.275.17.388q.03.086.057.177c.013.048.037.147.037.263s-.024.215-.037.263q-.025.09-.058.177c-.042.113-.1.245-.17.388-.139.289-.34.657-.6 1.074a18 18 0 0 1-2.284 2.936C18.859 18.913 15.864 21 12 21s-6.86-2.087-8.85-4.162a18 18 0 0 1-2.286-2.936c-.259-.417-.46-.785-.6-1.074a5 5 0 0 1-.17-.388 2 2 0 0 1-.057-.177A1 1 0 0 1 0 12c0-.116.024-.215.037-.263q.025-.09.058-.177c.042-.113.1-.245.17-.388.139-.289.34-.657.6-1.074a18 18 0 0 1 2.284-2.936C5.141 5.088 8.136 3 12 3m0 1.5c-3.295 0-5.925 1.78-7.769 3.701a16.7 16.7 0 0 0-2.093 2.688c-.236.38-.41.701-.523.934q-.05.105-.08.177.03.072.08.177c.113.233.287.554.523.934.472.76 1.176 1.732 2.093 2.688C6.075 17.72 8.705 19.5 12 19.5s5.924-1.78 7.769-3.701a16.7 16.7 0 0 0 2.093-2.688c.236-.38.41-.701.523-.934q.05-.105.08-.177a4 4 0 0 0-.08-.177 10 10 0 0 0-.523-.934A16.7 16.7 0 0 0 19.77 8.2C17.925 6.28 15.295 4.5 12 4.5M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8m0 1.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"/></svg></div>
+        <h3>Recorded sessions</h3>
+        <p class="desc">One sentence on what this column means for the reader.</p>
+      </div>
+    </div>
+    <div class="secttag">01 — Section</div>
+    <div class="pagenum">03</div>
   </section>
 
 </div>

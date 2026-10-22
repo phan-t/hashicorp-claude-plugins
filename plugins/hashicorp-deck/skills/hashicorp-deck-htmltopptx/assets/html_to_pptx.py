@@ -53,6 +53,12 @@ def items(node, selector="li"):
     return [t for t in (text(li) for li in node.select(selector)) if t]
 
 
+def _icon(node):
+    """The Flight icon name on a card or column's `.ico`, or None."""
+    ico = node.select_one(".ico[data-icon]")
+    return ico["data-icon"].strip() if ico else None
+
+
 def _card_prose(card):
     """Caption becomes a bold lead-in, so the two lines read as one sentence."""
     cap, desc = text(card.select_one(".cap")), text(card.select_one(".desc"))
@@ -72,15 +78,28 @@ class Slide:
         h1, h2 = el.select_one("h1"), el.select_one("h2")
         self.headline = text(h1 or h2)
         self.is_big = h1 is not None
-        self.lede = text(el.select_one(".lede") or el.select_one("p"))
+        # Without a .lede, fall back to the first paragraph that is not inside a
+        # card or column, or the subtitle repeats that card's own text.
+        loose = [p for p in el.select("p")
+                 if not p.find_parent(class_="card") and not p.find_parent(class_="split")]
+        self.lede = text(el.select_one(".lede") or (loose[0] if loose else None))
+        # A card with an .ico is a feature card: icon, heading, a line of prose.
+        # Those map to the kit's icon columns; the rest are metric cards.
+        cards = el.select(".card")
+        self.icon_cards = [
+            (_icon(c), text(c.select_one("h3")) or text(c.select_one(".cap")),
+             text(c.select_one(".desc")) or text(c.select_one("p")))
+            for c in cards if _icon(c)
+        ]
         self.cards = [
             (text(c.select_one(".num")) or text(c.select_one("h3")), _card_prose(c))
-            for c in el.select(".card")
+            for c in cards if not _icon(c)
         ]
         self.bullets = items(el, "ul li")
         self.columns = [items(col, "li") or [text(col.select_one("p"))]
                         for col in el.select(".row.split > *")]
         self.headings = [text(h) for h in el.select(".row.split > * h3")]
+        self.column_icons = [_icon(col) for col in el.select(".row.split > *")]
         self.quote = text(el.select_one("blockquote"))
         self.code = "\n".join(pre.get_text() for pre in el.select("pre")).strip()
         self.images = [img.get("src") for img in el.select("img[src]")]
@@ -94,6 +113,8 @@ class Slide:
             return "code"
         if self.quote:
             return "quote"
+        if len(self.icon_cards) >= 2:
+            return "icons"
         if len(self.cards) >= 2:
             return "metrics"
         if len(self.columns) >= 2:
@@ -105,6 +126,17 @@ class Slide:
         if self.is_big and not self.lede and not self.bullets:
             return "section"
         return "titled"
+
+
+def _icon_columns(deck, s, head, bodies, heads, icons, notes):
+    """Icon columns, falling back to bare squares when an icon name is unknown."""
+    try:
+        deck.columns(head, bodies, subtitle=s.lede or None, headings=heads,
+                     icons=icons, notes=notes)
+    except KeyError as e:
+        s.dropped.append(f"{e.args[0]}; icons left out")
+        deck.columns(head, bodies, subtitle=s.lede or None, headings=heads or [""] * len(bodies),
+                     notes=notes)
 
 
 def convert(html_path, out_path, kicker=None, selector=None, title=None,
@@ -145,13 +177,23 @@ def convert(html_path, out_path, kicker=None, selector=None, title=None,
                 s.dropped.append(f"{e}; carried as columns instead")
                 deck.columns(head, [f"**{v}** — {p}" for v, p in s.cards[:4]],
                              subtitle=s.lede or None, notes=notes)
+        elif kind == "icons":
+            cards = s.icon_cards
+            if len(cards) > 4:
+                s.dropped.append(f"{len(cards) - 4} extra card(s) — the kit holds 4 columns")
+            icons, heads, bodies = (list(t) for t in zip(*cards[:4]))
+            _icon_columns(deck, s, head, bodies, heads, icons, notes)
         elif kind == "columns":
             cols = [c for c in s.columns if c]
             if len(cols) > 4:
                 s.dropped.append(f"{len(cols) - 4} extra column(s) — the kit holds 4")
             heads = s.headings if len(s.headings) == len(cols[:4]) else None
-            deck.columns(head, cols[:4], subtitle=s.lede or None,
-                         headings=heads, notes=notes)
+            icons = s.column_icons[:4]
+            if all(icons) and len(icons) == len(cols[:4]):
+                _icon_columns(deck, s, head, cols[:4], heads, icons, notes)
+            else:
+                deck.columns(head, cols[:4], subtitle=s.lede or None,
+                             headings=heads, notes=notes)
         elif kind == "body":
             if not s.lede:
                 s.dropped.append("no lede — the body layout's left half will be empty; "

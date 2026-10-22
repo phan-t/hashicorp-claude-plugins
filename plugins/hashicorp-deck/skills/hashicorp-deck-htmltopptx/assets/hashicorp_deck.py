@@ -33,6 +33,9 @@ recolour of each other — they share no layout names, and the dark kit predates
 the glow gradient — so `MODES` carries everything that differs and a couple of
 methods are refused in dark mode with an explanation. See references/dark.md.
 
+Icons are HashiCorp's Flight set, vendored once for the whole plugin and drawn
+as vector shapes by `flight_icons`; see `columns(icons=...)` and `icon()`.
+
 Requires: python-pptx.
 """
 
@@ -42,11 +45,13 @@ from pptx import Presentation
 from pptx.chart.data import CategoryChartData
 from pptx.dml.color import RGBColor
 from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
-from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.shapes import MSO_SHAPE, MSO_SHAPE_TYPE
 from pptx.enum.dml import MSO_THEME_COLOR
 from pptx.enum.text import PP_ALIGN
 from pptx.oxml.ns import qn
 from pptx.util import Emu, Inches, Pt
+
+from flight_icons import custgeom, path_for
 
 LIGHT_TEMPLATE = Path(__file__).with_name("hashicorp-brand-template.pptx")
 DARK_TEMPLATE = Path(__file__).with_name("hashicorp-darkv4-template.pptx")
@@ -673,23 +678,35 @@ class Deck:
         return slide
 
     def columns(self, title, columns, subtitle=None, headings=None,
-                key=None, notes=None):
+                icons=None, key=None, notes=None):
         """2-4 columns of bullets, on the kit layout that fits the shape.
 
-        With `headings`, the "Icon Text Container" layouts are used: each column
-        is a bold header over a short paragraph, under one of the kit's icons.
-        Without, the plain N-column bullet layouts are used. Two plain columns
-        land on the body+bullets layout, whose first column has no bullet
-        character — pass `headings` if that asymmetry is not what you want.
+        With `headings` or `icons`, the "Icon Text Container" layouts are used:
+        each column is a bold header over a short paragraph, under one of the
+        kit's gradient icon squares. `icons` names one Flight icon per column
+        (search `catalog.tsv` beside the SVGs by keyword); without it the squares
+        stay empty and a warning says so. Without either, the plain N-column
+        bullet layouts are used. Two plain columns land on the body+bullets
+        layout, whose first column has no bullet character — pass `headings` if
+        that asymmetry is not what you want.
         """
         columns = [c for c in columns if c]
         n = len(columns)
         headings = list(headings or [])
+        icons = list(icons or [])
+        if icons:
+            if len(icons) != n:
+                raise ValueError(f"icons= names {len(icons)} icon(s) for {n} column(s)")
+            for name in icons:
+                path_for(name)          # an unknown name fails here, before any slide
         if key is None:
             if n < 1 or n > 4:
                 raise ValueError(f"the kit holds 1-4 columns, got {n}")
-            if headings and f"icons_{max(2, n)}" in self.cfg["layouts"]:
+            if (headings or icons) and f"icons_{max(2, n)}" in self.cfg["layouts"]:
                 key = f"icons_{max(2, n)}"
+            elif icons:
+                raise ValueError(f"the {self.mode} kit has no icon layout; drop "
+                                 "icons= or build in mode='light' or 'dark'")
             elif n <= 2:
                 key = "cols_2" if "cols_2" in self.cfg["layouts"] else "body"
             else:
@@ -698,7 +715,18 @@ class Deck:
         self.set_text(slide.shapes.title, title)
         self.set_text(self.ph(slide, "SUBTITLE"), subtitle)
 
+        if icons and not key.startswith("icons_"):
+            raise ValueError(f"layout {key!r} has no icon squares; icons= needs an "
+                             "icons_N layout")
         if key.startswith("icons_"):
+            squares = self.icon_squares(slide)
+            for square, name in zip(squares, icons):
+                inset = (square.width - self.ICON_SIZE) // 2
+                self.icon(slide, name, square.left + inset, square.top + inset)
+            if len(squares) > len(icons):
+                self.warnings.append(
+                    f"{str(title)[:40]!r}: {len(squares) - len(icons)} of {len(squares)} "
+                    "icon square(s) left empty — pass icons= to fill them")
             slots = self.content_bodies(slide)
             # Icon layouts stack a header row above a body row; both are read in
             # vertical order, so split on the row boundary rather than by index.
@@ -708,10 +736,16 @@ class Deck:
             texts = sorted([p for p in slots if p.top >= split], key=lambda p: p.left)
             if n > len(heads):
                 raise ValueError(f"layout {key!r} has {len(heads)} columns for {n}")
-            for slot, value in zip(heads, headings):
+            for i, (slot, value) in enumerate(zip(heads, headings)):
                 self.set_text(slot, value)
+                self.check_fit(slide, slot.placeholder_format.idx, value,
+                               f"{str(title)[:40]!r} heading {i + 1}")
                 for para in slot.text_frame.paragraphs:
                     clear_bullet(para)
+                    # The master's hanging indent outlives the bullet, so a
+                    # heading that wraps would indent its second line.
+                    para._p.get_or_add_pPr().set("marL", "0")
+                    para._p.get_or_add_pPr().set("indent", "0")
             for slot, value in zip(texts, columns):
                 # These slots carry no bullet character, so a list of points
                 # reads as separate lines rather than a run-on sentence.
@@ -729,6 +763,44 @@ class Deck:
                 self.set_text(slot, value)
         self.drop_empty(slide)
         return slide
+
+    #: Icon size inside the kit's 0.46 in icon square. The square is the same
+    #: pastel gradient in both kits, so the icon is black in dark mode too.
+    ICON_SIZE = Inches(0.28)
+    ICON_INK = "000000"
+
+    @staticmethod
+    def icon_squares(slide):
+        """The layout's gradient icon squares, left to right.
+
+        They are layout shapes, not placeholders, so they inherit onto the slide
+        and cannot be filled; the icon is drawn on top of each one instead.
+        """
+        squares = [s for s in slide.slide_layout.shapes
+                   if s.shape_type == MSO_SHAPE_TYPE.AUTO_SHAPE
+                   and s.auto_shape_type == MSO_SHAPE.ROUNDED_RECTANGLE
+                   and s.width < Inches(0.6)]
+        return sorted(squares, key=lambda s: s.left)
+
+    def icon(self, slide, name, left, top, size=None, color=None):
+        """Draw Flight icon `name` as a vector shape with its top-left at (left, top).
+
+        The shape is an ordinary freeform, so it stays sharp at any zoom and can
+        be recoloured in PowerPoint. Raises KeyError, with suggestions, for a
+        name Flight does not have.
+        """
+        size = size or self.ICON_SIZE
+        geom = custgeom(name)
+        shape = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, size, size)
+        prst = shape._element.spPr.find(qn("a:prstGeom"))
+        prst.addprevious(geom)
+        prst.getparent().remove(prst)
+        shape.fill.solid()
+        shape.fill.fore_color.rgb = RGBColor.from_string(color or self.ICON_INK)
+        shape.line.fill.background()
+        shape.shadow.inherit = False
+        shape.name = f"Icon: {name}"
+        return shape
 
     def _column_slots(self, slide, key):
         if key == "body" and self.cfg["body_slots"]:   # prose slot, then bullet slot

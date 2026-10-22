@@ -91,7 +91,8 @@ d.body("One team owned the pipeline",
        bullets=["**Four days** — median lead time.", "**Rollbacks** — needed a ticket."])
 d.columns("Three things moved",
           ["Teams ship without a ticket.", "Policy runs in CI.", "One dashboard."],
-          headings=["Self-service", "Guardrails", "Visibility"])
+          headings=["Self-service", "Guardrails", "Visibility"],
+          icons=["user-plus", "shield-check", "dashboard"])
 d.metrics([("92%", "Faster lead time"), ("3x", "Deploys per week")], title="By the numbers")
 d.code("The guardrail", open("policy.sentinel").read(), caption="policy.sentinel")
 d.end()
@@ -129,8 +130,13 @@ the layout keys they map to are in `references/layouts.md`.
 ## Rules that keep the output on-brand
 
 - **Never set a font, color, size or position.** Fill placeholders and let the layout's list
-  styles resolve the rest. The sanctioned exceptions are `code()`, `table()`, `chart()` and
-  the attribution line on `quote()` — the four places the kit ships no placeholder at all.
+  styles resolve the rest. The sanctioned exceptions are `code()`, `table()`, `chart()`, the
+  attribution line on `quote()` and the icons `columns()` draws on the kit's icon squares.
+  These are the places where the kit ships no placeholder at all.
+- **Fill every icon square.** The Icon Text Container layouts draw an empty gradient square
+  above each column. Pass `icons=` with one Flight icon per column, chosen for what the column
+  says; search the names with `python3 ../../assets/icons/flight.py search <word>`. Flight is
+  the only icon source; do not draw or import others.
 - **Sentence case, always.** The kit writes its own slide titles in sentence case. The one
   place it uses caps is the eyebrow label (`BLUEPRINT FOR CLOUD SUCCESS`), and `eyebrow()`
   is where that belongs.
@@ -156,7 +162,8 @@ the layout keys they map to are in `references/layouts.md`.
 | `h1` alone | Section divider |
 | `blockquote` | Pull-quote in the glow gradient |
 | `ul li` + a lede | Body copy left, bullet list right |
-| `.row.split` children | 2–4 columns; with `h3` headings, the icon containers |
+| `.row.split` children | 2–4 columns; with `h3` headings or `.ico`, the icon containers |
+| `.card` with `.ico[data-icon]` | 2–4 icon columns: the same icon, the `h3` as header, the `.desc` beneath |
 | `.card` with `.num` | 2 or 3 metrics, number + caption |
 | `pre` | Code panel on a titled slide |
 | `img` | Image overlay, small right |
@@ -165,7 +172,7 @@ the layout keys they map to are in `references/layouts.md`.
 The mapping is identical in dark mode. Only `mode="dark-v2"`, HashiCorp's own older dark
 kit, is missing layouts; there a `.card` slide falls back to columns and says so.
 
-Detail on each layout's slots — and the four traps that make text land in the wrong place —
+Detail on each layout's slots — and the traps that make text land in the wrong place —
 is in `references/layouts.md`. Read it before adding a slide type.
 
 ## Checklist before handing it over
@@ -173,5 +180,6 @@ is in `references/layouts.md`. Read it before adding a slide type.
 - [ ] Converter report read; every `!` line resolved or consciously accepted.
 - [ ] Sentence case throughout; no trailing full-stops on headlines.
 - [ ] No slide exceeds its layout's slot count.
+- [ ] No icon square is left empty, and each icon fits what its column says.
 - [ ] Deck opened and eyeballed — headlines fit, nothing overflows, gradients render.
 - [ ] Saved to the path the user asked for, and they were told where it is.

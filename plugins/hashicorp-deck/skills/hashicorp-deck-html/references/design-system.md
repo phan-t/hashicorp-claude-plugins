@@ -89,10 +89,50 @@ h3{font-size:clamp(1.25rem,2.4vw,1.7rem);font-weight:600;letter-spacing:-.01em;}
 - `.slide` — `min-height:100vh`, generous responsive padding `clamp(2rem,6vw,7rem) clamp(1.5rem,7vw,9rem)`, flex column centered, 1px bottom border between slides.
 - `.row.split` — two-column grid `1.05fr .95fr`, collapses to one column under 880px.
 - `.cards` — `repeat(auto-fit,minmax(220px,1fr))`; `.card` has 1px border, 16px radius, used for metrics (`.num` big number, `.cap` mono caption, `.desc` small prose).
+- `.card .ico` — a feature card's icon: a 44px rounded square in the kit's pastel icon
+  gradient holding one 24px Flight icon (see "Icons" below). An icon card has `.ico`, an `h3`
+  and a `.desc`, and no `.num`.
 - `.clean` list — no bullets-as-discs default; custom colored dot `::before`, each `li` a bold lead-in + sentence. Keep all items in ONE column.
 - `.fix` block — content with a 3px colored left border and a small mono `.tag` chip; good for before/after, problem/cause, or itemized points.
 - `pre` — dark code block (`--gray-900` bg), mono, with syntax accent spans `.c`(comment/gray) `.k`(keyword/purple) `.s`(string/green) `.n`(number/yellow).
 - `.kbd` — inline key/code chip.
+
+## Icons
+
+Icons come from HashiCorp's Flight set, vendored once for the plugin in
+`../../assets/icons/flight/` (552 single-colour 24px SVGs, MPL-2.0). Do not draw icons, pull
+them from another set, or use emoji. Find one by keyword and print the block to paste:
+
+```bash
+python3 ../../assets/icons/flight.py search lock
+python3 ../../assets/icons/flight.py ico key
+```
+
+```html
+<div class="card">
+  <div class="ico" data-icon="key"><svg aria-hidden="true" viewBox="0 0 24 24">…</svg></div>
+  <h3>Short-lived credentials</h3>
+  <p class="desc">One sentence on what this means for the reader.</p>
+</div>
+```
+
+```css
+.card .ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;color:var(--ink);
+  background:linear-gradient(135deg,#a8b5ff 0%,#cfa9fc 22%,#fdafb5 75%,#ffeeb1 99%);}
+.card .ico svg{width:24px;height:24px;display:block;}
+.card .ico+h3{margin-top:1.3rem;font-size:clamp(1.05rem,1.6vw,1.25rem);}
+```
+
+- The gradient is the CY26 kit's icon square (`A8B5FF`, `CFA9FC`, `FDAFB5`, `FFEEB1` at 45°).
+  It is one of the kit's own fills, so it is allowed here even though gradients are otherwise
+  text-only. It stays the same on `.dark` slides, and so does the `--ink` icon on it.
+- Keep `data-icon`. `hashicorp-deck-htmltopptx` reads it to put the same icon in the same
+  column of the .pptx, because a pasted SVG cannot be traced back to its name.
+- Match the icon to what the card says. A card about short-lived credentials wants `key` or
+  `clock`, even when its heading names a product.
+- Use 2 to 4 icon cards on a slide. That is what the kit's icon layouts hold, so a deck
+  converts without dropping a card.
 
 ## Wayfinding & chrome
 

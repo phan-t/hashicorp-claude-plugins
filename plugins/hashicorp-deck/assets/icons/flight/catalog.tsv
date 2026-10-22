@@ -1,0 +1,553 @@
+name	category	keywords
+accessibility	User	a11y, inclusive, universal access
+activity	Communication	activity, pulse, health
+alert-circle	Status	alert, circle, error, attention, warning
+alert-circle-fill	Status	alert, circle, error, attention, warning
+alert-diamond	Status	alert, diamond, error, attention, warning
+alert-diamond-fill	Status	alert, diamond, error, attention, warning
+alert-octagon	Status	alert, octagon, error, attention, warning, stop
+alert-octagon-fill	Status	alert, octagon, error, attention, stop
+alert-triangle	Status	alert, triangle, error, attention, warning
+alert-triangle-fill	Status	alert, triangle, error, attention, warning
+alibaba	Services	alibaba, alibaba cloud
+align-center	Interface	align, text, center
+align-justify	Interface	align, text, justify
+align-left	Interface	align, text, left
+align-right	Interface	align, text, right
+amazon-ecs	Services	amazon, aws, ecs
+amazon-eks	Services	amazon, aws, eks, kubernetes
+ampersand	Symbols	and, or, conditional
+ansible-automation-platform	Services	ansible, redhat, platform, automation, aap
+ansible-community	Services	ansible, redhat, community
+api	Development	api, data, interface
+apple	Services	apple, macos, ios
+archive	Files	archive, box, inbox
+arrow-down	Arrows	arrow, direction, down
+arrow-down-circle	Arrows	arrow, direction, down, circle
+arrow-down-left	Arrows	arrow, direction, down, left
+arrow-down-right	Arrows	arrow, direction, down, right
+arrow-left	Arrows	arrow, direction, left
+arrow-left-circle	Arrows	arrow, direction, left, circle
+arrow-right	Arrows	arrow, direction, right
+arrow-right-circle	Arrows	arrow, direction, right, circle
+arrow-up	Arrows	arrow, direction, up
+arrow-up-circle	Arrows	arrow, direction, up, circle
+arrow-up-left	Arrows	arrow, direction, up, left
+arrow-up-right	Arrows	arrow, direction, up, right
+at-sign	Communication	at, @, email, handle
+auth0	Services	auth0
+auto-apply	Development	apply, auto
+award	Communication	award, medal, badge, achievement
+aws	Services	amazon, aws, amazon web services
+aws-cdk	Services	amazon, aws, amazon web services,cdk
+aws-cloudwatch	Services	amazon, aws, cloudwatch
+aws-ec2	Services	amazon, aws, ec2
+aws-lambda	Services	amazon, aws, lambda
+aws-s3	Services	amazon, aws, s3
+azure	Services	azure, microsoft
+azure-aks	Services	azure, microsoft, aks
+azure-blob-storage	Services	microsoft, azure, blob, storage
+azure-devops	Services	azure, microsoft
+azure-vms	Services	azure, microsoft, vms
+bank-vault	Business	vault, secure, safe, secret
+bar-chart	Data	chart, graph, usage, signal, bars
+bar-chart-alt	Data	chart, graph, usage, bars
+battery	Interface	battery, empty, charge
+battery-charging	Interface	battery, charging
+beaker	Symbols	beaker, lab, experiment, science, test
+bell	Communication	bell, notification, notify, ring, alert
+bell-active	Communication	bell, notification, notify, ring, alert
+bell-active-fill	Communication	bell, notification, notify, ring, alert
+bell-off	Communication	bell, notification, notify, ring, alert, off, disabled
+bitbucket	Services	bitbucket, atlassian
+bookmark	Interface	bookmark, save
+bookmark-add	Interface	bookmark, add, save
+bookmark-add-fill	Interface	bookmark, add, save
+bookmark-fill	Interface	bookmark, bookmarked, saved
+bookmark-remove	Interface	bookmark, minus, remove
+bookmark-remove-fill	Interface	bookmark, minus, remove
+bottom	Interface	bottom, scroll, down
+boundary	Products	boundary
+boundary-fill	Products	boundary
+boundary-square	Products	boundary
+box	Data	box, package, cube, object
+bridgecrew	Services	bridgecrew
+briefcase	Business	briefcase, job, work, office, bag
+bucket	Symbols	bucket, bin, container
+bug	Security	bug, issue, security, malware, vulnerability
+build	Development	build, wrench, tool
+bulb	Symbols	bulb, light, idea, smart, insight, on
+calendar	Date and time	calendar, date, appointment, event, schedule, day, month
+camera	Media	camera, photo
+camera-off	Media	camera, photo, off, disabled
+caret	Arrows	caret, open, dropdown, double arrow, chevron
+cast	Media	cast, stream
+certificate	Security	certificate, award, achievement, badge
+change	Development	change, modified
+change-circle	Development	change, modified, circle
+change-square	Development	change, modified, square
+channel	Development	channel, path
+check	Status	check, tick, success, complete, done, test, accept, approve
+check-circle	Status	check, tick, success, circle, complete, done, test, accept, approve
+check-circle-fill	Status	check, tick, success, circle, complete, done, test, accept, approve
+check-diamond	Status	check, tick, success, diamond, complete, done, test, accept, approve
+check-diamond-fill	Status	check, tick, success, diamond, complete, done, test, accept, approve
+check-hexagon	Status	check, tick, success, diamond, complete, done, test, accept, approve
+check-hexagon-fill	Status	check, tick, success, diamond, complete, done, test, accept, approve
+check-square	Status	check, tick, success, checkbox, square, complete, done, test, accept, approve
+check-square-fill	Status	check, tick, success, checkbox, square, checked, complete, done, test, accept, approve
+chevron-down	Arrows	chevron, down, arrow, direction
+chevron-left	Arrows	chevron, left, previous, back, arrow, direction
+chevron-right	Arrows	chevron, right, next, forward, arrow, direction
+chevron-up	Arrows	chevron, up, arrow, direction
+chevrons-down	Arrows	chevrons, down, arrow, direction
+chevrons-left	Arrows	chevrons, left, previous, back, arrow, direction
+chevrons-right	Arrows	chevrons, right, next, forward, arrow, direction
+chevrons-up	Arrows	chevrons, up, arrow, direction
+circle	Symbols	circle, ring, arrow, direction, round
+circle-dash	Symbols	circle, ring, dash, progress
+circle-dot	Symbols	circle, dot, round
+circle-fill	Symbols	circle, dot, round
+circle-half	Symbols	circle, dot, half, progress, round
+cisco	Services	cisco
+clipboard	Files	clipboard, copy, paste, content
+clipboard-checked	Files	clipboard, copy, copied, success, paste, content
+clipboard-copy	Files	clipboard, copy, snippet, paste, content
+clipboard-x	Files	clipboard, copy, copied, error, paste, content
+clock	Date and time	clock, time, activity, hour
+clock-filled	Date and time	clock, time, activity, hour
+closed-caption	Media	cc, closed-caption
+cloud	Development	cloud, data, storage
+cloud-check	Development	cloud, check, success, data, storage
+cloud-download	Development	cloud, download, sync, data, storage
+cloud-lightning	Development	cloud, lightning, data, storage
+cloud-lock	Development	cloud, lock, secure, data, storage, protected
+cloud-off	Development	cloud, off, disabled, data, storage
+cloud-upload	Development	cloud, upload, sync, data, storage
+cloud-x	Development	cloud, fail, delete, data, storage
+cloudability	Services	cloudability, apptio
+code	Development	code, snippet, software, application, development
+codepen	Services	codepen
+collections	Data	collections, books, projects, resources
+command	Interface	command, cmd, shortcut
+compass	Location	compass, navigate, browser, map
+confluence	Services	confluence, atlassian, document
+confluent	Services	confluent
+connection	Development	git, vcs, commit, link, network
+connection-gateway	Development	git, vcs, commit, link, network
+consul	Products	consul
+consul-fill	Products	consul
+consul-square	Products	consul
+corner-down-left	Arrows	corner, arrow, down, left
+corner-down-right	Arrows	corner, arrow, down, right
+corner-left-down	Arrows	corner, arrow, down, left
+corner-left-up	Arrows	corner, arrow, up, left
+corner-right-down	Arrows	corner, arrow, down, right
+corner-right-up	Arrows	corner, arrow, up, right
+corner-up-left	Arrows	corner, arrow, up, left
+corner-up-right	Arrows	corner, arrow, up, right
+cpu	Development	cpu, memory, chip, computer
+credit-card	Business	credit, card, billing, business, money, payment
+crop	Interface	crop, edit
+crosshair	Location	crosshair, target
+dashboard	Interface	grid, dashboard, overview, layout
+database	Data	database, data,, information, computing
+datadog	Services	datadog
+delay	Date and time	delay, time, clock, queue
+delete	Interface	delete, backspace
+diamond	Symbols	diamond, test
+diamond-fill	Symbols	diamond, test
+digital-ocean	Services	digital, ocean
+disc	Symbols	disc, cd
+discussion-circle	Communication	discussion, comment, conversation, bubble, chat, communication
+discussion-square	Communication	discussion, comment, conversation, bubble, chat, communication
+docker	Services	docker
+docs	Support	book, docs, learn
+docs-download	Support	book, docs, learn, download
+docs-link	Support	book, docs, learn, link, arrow, external
+dollar-sign	Business	dollar, money, variable, payment
+dot	Symbols	circle, dot, bullet
+dot-half	Symbols	circle, dot, bullet, half, progress
+download	Interface	download, file, export, save
+droplet	Symbols	drop, water
+duo	Services	activity, pulse, health
+duplicate	Development	duplicate, copy, clone, multiply
+edit	Interface	edit, pencil, draw, writing
+elastic-observability	Services	elastic, observability, provider, cloud
+end	Interface	move, right
+enterprise	Business	enterprise, business, company, organization, org, global, world
+entry-point	Interface	arrow, circle, enter, entry, service, start
+error-filled	Status	error, slash, fill
+event	Date and time	event, calendar, date
+exit-point	Interface	arrow, circle, exit, end, service
+external-link	Interface	link, external, go
+eye	Security	eye, view
+eye-off	Security	eye, view, off, disabled
+f5	Services	f5
+facebook	Services	facebook
+fast-forward	Media	fastforward, forward, skip
+figma	Services	figma
+file	Files	file, document, format, paper
+file-change	Files	file, document, change, modified, format, paper
+file-check	Files	file, document, success, check, format, paper
+file-diff	Files	file, document, diff, change, format, paper
+file-minus	Files	file, document, remove, minus, format, paper
+file-plus	Files	file, document, create, add, plus, format, paper
+file-source	Files	file, document, source, code, format, paper
+file-text	Files	file, document, text, format, paper, project
+file-x	Files	file, document, deleted, removed, format, paper
+files	Files	files, documents, group, hosts, format, paper
+film	Media	film, movie, video
+filter	Interface	filter, options, configuration
+filter-circle	Interface	filter, circle, inactive, off, options, configuration
+filter-fill	Interface	filter, circle, active, on, options, configuration
+fingerprint	Security	
+flag	Symbols	flag, mark
+folder	Files	folder, directory, project, document, file
+folder-fill	Files	folder, directory, project, document, file
+folder-minus	Files	folder, directory, project, minus, remove, document, file
+folder-minus-fill	Files	folder, directory, project, minus, remove, document, file
+folder-plus	Files	folder, directory, project, plus, add, create, document, file
+folder-plus-fill	Files	folder, directory, project, plus, add, create, document, file
+folder-star	Files	folder, directory, starred, favorite, pinned, document, file
+folder-users	User	folder, directory, project, group, users, document, file
+frown	User	emoji, frown, negative, sad, face
+gateway	Development	gateway, entrance, tunnel
+gcp	Services	google, gcp, google cloud platform
+gift	Symbols	gift, present, new
+git	Services	git
+git-branch	Development	git, vcs, branch
+git-commit	Development	git, vcs, commit
+git-merge	Development	git, vcs, merge
+git-pull-request	Development	git, vcs, pull, request, pr
+git-repo	Development	git, vcs, repository
+github	Services	github
+gitlab	Services	gitlab
+globe	Business	globe, world, global
+globe-private	Business	globe, world, global, private, secure, encrypted, protected
+google	Services	google
+google-docs	Services	google, docs
+google-drive	Services	google, drive
+google-forms	Services	google, forms
+google-sheets	Services	google, sheets
+google-slides	Services	google, slides
+government	Symbols	government, public, sector, organization, building
+grafana	Services	grafana
+grid	Interface	grid, format, view, group, layout
+grid-alt	Interface	grid, format, view, group, layout
+guide	Support	book, library, catalogue, guide
+guide-link	Support	book, library, catalogue, guide, link, arrow, external
+hammer	Development	hammer, build, tool
+handshake	Symbols	hands, handshake, partners
+hard-drive	Data	hard, drive, disk, storage
+hash	Symbols	hash, pound, tag
+hashicorp	Products	hashicorp, logo, brand
+hashicorp-fill	Products	hashicorp, logo, brand
+hashicorp-square	Products	hashicorp, logo, brand
+hcp	Products	hcp, cloud, portal
+hcp-fill	Products	hcp, cloud, portal
+hcp-square	Products	hcp, cloud, portal
+headphones	Media	headphones, music, sound
+heart	Communication	heart, like, love, favorite
+heart-fill	Communication	heart, liked, loved, favorited
+heart-off	Communication	heart, like, love, favorite, disabled, off
+helm	Services	helm
+help	Support	help, question, support, information, unknown
+hexagon	Symbols	diamond, test
+hexagon-fill	Symbols	diamond, test
+history	Date and time	clock, time, history, schedule
+home	Interface	home, house
+hourglass	Date and time	hourglass, time
+identity-service	User	identity, id, service, globe
+identity-user	User	identity, id, user
+image	Media	image, photo, picture, media
+inbox	Files	inbox, tray
+incomplete-normal	Symbols	circle, half, dash
+info	Support	info, tip, about
+info-fill	Support	info, tip, about
+infracost	Services	infracost
+jenkins	Services	jenkins
+jfrog	Services	jfrog
+jira	Services	jira, atlassian, tasks, tickets
+jump-link	Interface	jump, go, link, skip
+jwt	Services	json web tokens, jwt
+key	Security	key, secure, secret
+key-values	Development	key, value, store, kv
+keychain	Security	keys, keychain
+kubernetes	Services	kubernetes, k8s
+labyrinth	Symbols	labyrinth, maze
+layers	Symbols	layers, stack
+layout	Interface	layout, app, window
+learn	Support	learn, education, college, school
+learn-link	Support	learn, education, college, school, go, link, external
+lightlytics	Services	lightlytics
+line-chart	Data	chart, graph, trend, data
+line-chart-up	Data	chart, graph, trend, up, data
+link	Interface	link, url
+linkedin	Services	linkedin, microsoft
+linode	Services	linode
+linux	Services	linux, os
+list	Interface	list, format, view, group
+load-balancer	Arrows	load, balancer, arrows
+loading-static	Animated	loading, loader, spinner, static
+lock	Security	lock, secure, security, protection
+lock-fill	Security	lock, secure, locked, secured, protected
+lock-off	Security	lock, secure, off, disabled, protected
+logs	Data	logs, events, list
+loom	Services	loom
+mail	Communication	mail, email, message, communication
+mail-open	Communication	mail, email, message, opened, communication
+mainframe	Development	mainframe, server
+map	Location	map, navigate, plan, location
+map-pin	Location	map, pin, location
+maximize	Interface	maximize, zoom
+maximize-alt	Interface	maximize, zoom
+meetup	Services	meetup
+meh	User	emoji, meh, neutral
+menu	Interface	menu, hamburger, navigation, list
+mesh	Development	mesh, network
+message-circle	Communication	message, chat, conversation
+message-circle-fill	Communication	message, chat, text, conversation
+message-square	Communication	message, chat, conversation
+message-square-fill	Communication	message, chat, text, conversation
+mic	Communication	microphone, voice, speak
+mic-off	Communication	microphone, off, disabled, voice
+microsoft	Services	microsoft, ms, windows
+microsoft-teams	Services	microsoft, teams
+migrate	Arrows	migrate, migration
+minimize	Interface	minimize, collapse, close
+minimize-alt	Interface	minimize
+minio	Services	minio
+minus	Operations	minus, remove, delete
+minus-circle	Operations	minus, remove, delete, circle
+minus-circle-fill	Operations	minus, remove, delete, circle
+minus-plus	Operations	minus, remove, delete, plus, add, create, change, modify
+minus-plus-circle	Operations	minus, remove, delete, plus, add, create, change, modify, circle
+minus-plus-square	Operations	minus, remove, delete, plus, add, create, change, modify, square
+minus-square	Operations	minus, remove, delete, square
+minus-square-fill	Operations	minus, remove, delete, square
+module	Development	module
+mongodb	Services	mongodb
+monitor	Development	monitor, display, screen, desktop, computer
+moon	Symbols	moon, night, dark
+more-horizontal	Interface	more, ellipsis
+more-vertical	Interface	more, actions
+mouse-pointer	Interface	mouse, pointer, cursor
+move	Arrows	move, cursor
+move-horizontal	Interface	column, move, arrows, table
+music	Media	music, audio, sound
+navigation	Location	navigation, location
+navigation-alt	Location	navigation
+network	Development	network, lan, connected
+network-alt	Development	network, lan, connection, ethernet, port
+new-relic	Services	new relic, provider, cloud
+newspaper	Communication	newspaper, blog, media
+node	Development	node, element, point
+nomad	Products	nomad
+nomad-fill	Products	nomad
+nomad-square	Products	nomad
+octagon	Symbols	octagon, stop
+okta	Services	okta
+opa	Services	opa, open, policy, agent
+openid	Services	openid, oidc
+openstack	Services	openstack
+oracle	Services	oracle, oracle cloud
+org	Business	organization, team, group, company, global
+outline	Symbols	outline, document, list
+pack	Services	pack, buildpack, cloud, native
+package	Data	package, dependency, box, build
+packer	Products	packer
+packer-fill	Products	packer
+packer-square	Products	packer
+pager-duty	Services	pagerduty
+paperclip	Interface	paperclip, clip, attachment
+path	Development	path, connection, network
+pause	Media	pause
+pause-circle	Media	pause, circle
+pen-tool	Interface	pen, vector, tool
+pencil-tool	Interface	edit, pencil, tool
+phone	Communication	phone, telephone, communication, conversation
+phone-call	Communication	phone, telephone, communication, conversation
+phone-off	Communication	phone, telephone, off, disabled, communication, conversation
+pie-chart	Data	chart, pie, graph, data
+pin	Interface	pin, pinned
+pin-off	Interface	unpin, pin, off
+ping-identity	Services	ping, identity
+pipeline	Development	pipeline
+play	Media	play, start, run
+play-circle	Media	play, start, run, circle
+plug	Development	plug, plugin
+plus	Operations	plus, add, create, new
+plus-circle	Operations	plus, add, create, new, circle
+plus-circle-fill	Operations	plus, add, create, new, circle
+plus-square	Operations	plus, add, create, new, square
+portal	Development	door, developer
+postgres	Services	postgres
+power	Interface	power, on, off
+printer	Interface	printer
+provider	Business	provider, service
+queue	Data	queue
+rabbitmq	Services	rabbitmq
+radio	Media	radio, sound, signal
+random	Symbols	random, dice, chance
+redirect	Location	redirect, arrow
+reload	Interface	reload, restart, refresh
+repeat	Interface	repeat, redo, process, loop
+replication-direct	Development	replication, duplication
+replication-perf	Development	replication, duplication
+resize-column	Interface	column, resize, arrows, table
+rewind	Media	rewind, back, previous
+robot	User	service, principal, computer, user
+rocket	Symbols	rocket, launch
+rotate-ccw	Interface	rotate
+rotate-cw	Interface	rotate
+rss	Media	rss, feed
+running-static	Animated	running, run, syncing, sync, static
+saml	Services	saml
+save	Data	save, disk
+scissors	Development	scissors, cut
+search	Interface	search, find, magnifier
+send	Communication	send, message
+server	Development	server, data
+server-cluster	Development	server, data, cluster, network
+serverless	Development	serverless, off, disabled, data
+service	Development	service
+service-now	Services	servicenow
+settings	Development	settings, preferences, gear, cog, configuration
+share	Interface	share
+shield	Security	shield, secure, protect, privacy
+shield-alert	Security	shield, secure, protect, issue, alert, privacy
+shield-check	Security	shield, secure, protect, check, success, privacy
+shield-off	Security	shield, secure, protect, off, disabled, privacy
+shield-x	Security	shield, secure, protect, error, privacy
+shopping-bag	Business	shopping, store, basket
+shopping-cart	Business	shopping, store, basket, cart
+shuffle	Arrows	shuffle, random
+sidebar	Interface	layout, sidebar, navigation
+sidebar-hide	Interface	layout, sidebar, hide, collapse, navigation
+sidebar-show	Interface	layout, sidebar, show, expand, navigation
+sign-in	Interface	login, signin, enter, access
+sign-out	Interface	logout, signout, leave, exit, access
+skip	Status	skip, deny
+skip-back	Media	skip, previous, back
+skip-forward	Media	skip, forward, next
+slack	Services	slack, salesforce
+slash	Interface	slash
+slash-square	Interface	slash, square
+sliders	Development	sliders, options, preferences, customize, options
+smartphone	Development	phone, device, mobile
+smile	User	emoji, smile, positive, happy
+snyk	Services	snyk
+socket	Development	socket, port
+sort-asc	Interface	sort, ascending, up
+sort-desc	Interface	sort, descending, down
+sparkle	Symbols	ai, sparkle, stars
+speaker	Media	speaker, sound
+splunk	Services	splunk
+square	Symbols	square, rectangle, box, stop
+square-fill	Symbols	square, rectangle, box, stop
+star	Communication	star, favorite
+star-circle	Communication	star, favorite, ring, circle
+star-fill	Communication	star, favorite, starred, favorited
+star-off	Communication	star, favorite, off, disabled
+start	Interface	move, left
+step	Development	step, pipeline
+stop-circle	Media	stop, circle, end
+sun	Symbols	sun, day, light, bright
+support	Support	lifebuoy, help, support, question, service, information, assistance
+swap-horizontal	Arrows	swap, switch, horizontal, arrows, sctm
+swap-vertical	Arrows	swap, switch, vertical, arrows
+switcher	Interface	switcher, launcher, apps
+sync	Interface	refresh, syncing
+sync-alert	Interface	refresh, syncing, issue, alert
+sync-reverse	Interface	refresh, syncing, reverse
+tablet	Development	tablet, device, mobile
+tag	Interface	tag, label, category
+target	Location	target
+terminal	Development	terminal, code, cli, programming
+terminal-screen	Development	terminal, code, cli, interactive, programming
+terraform	Products	terraform
+terraform-fill	Products	terraform
+terraform-square	Products	terraform
+test	Development	test, check, delay, waiting
+text-wrap	Interface	wrap, text
+thumbs-down	Communication	thumbs, down, vote, dislike
+thumbs-up	Communication	thumbs, up, vote, like
+toggle-left	Interface	toggle, switch
+toggle-right	Interface	toggle, switch
+token	Security	tokens
+tools	Development	tools, toolbox
+top	Interface	top, scroll, up
+transform-data	Development	crypto, path, encrypt, transform
+trash	Interface	trash, bin, delete
+trend-down	Data	trend, down, negative
+trend-up	Data	trend, up, positive
+triangle	Symbols	triangle
+triangle-fill	Symbols	triangle
+truck	Symbols	truck, lorry, vehicle, transport, ship
+tv	Development	tv, video, watch
+twilio	Services	twilio
+twitch	Services	twitch
+twitter	Services	twitter
+twitter-x	Services	twitter, x
+type	Interface	type, font, text
+unfold-close	Interface	fold, close, collapse
+unfold-open	Interface	unfold, open, expand
+unlock	Security	lock, unlock, unlocked, unsecure
+upload	Interface	upload, data, file, import
+user	User	user, person, profile
+user-check	User	user, person, check, success, profile
+user-circle	User	user, person, avatar, circle, profile
+user-circle-fill	User	user, person, avatar, circle, profile
+user-minus	User	user, person, minus, remove, profile
+user-plus	User	user, person, plus, new, create, add, profile
+user-x	User	user, person, delete, remove, profile
+users	User	users, people, team, group, profile
+vagrant	Products	vagrant
+vagrant-fill	Products	vagrant
+vagrant-square	Products	vagrant
+vantage	Services	vantage
+vault	Products	vault
+vault-fill	Products	vault
+vault-radar	Products	vault, hcp vault, radar
+vault-radar-fill	Products	vault, hcp vault, radar
+vault-radar-square	Products	vault, hcp vault, radar
+vault-secrets	Products	vault secrets, hcp vault secrets
+vault-secrets-fill	Products	vault, hcp vault, secrets
+vault-secrets-square	Products	vault, hcp vault, secrets
+vault-square	Products	vault
+venafi	Services	venafi, identity
+vercel	Services	vercel
+verified	Security	verified, badge, authenticated
+video	Communication	video
+video-off	Communication	video, off, disabled
+vmware	Services	vmware, vmware cloud
+volume	Media	volume, low, muted, sound, audio, speaker
+volume-down	Media	volume, down, low, quiet, sound, audio, speaker
+volume-up	Media	volume, up, high, loud, sound, audio, speaker
+volume-x	Media	volume, off, disabled, muted, sound, audio, speaker
+wall	Security	wall, firewall, barrier
+wand	Symbols	wand, magic, enhance, insights
+watch	Date and time	watch, time
+waypoint	Products	waypoint
+waypoint-fill	Products	waypoint
+waypoint-square	Products	waypoint
+webhook	Development	webhook, hook
+wifi	Media	wifi, internet
+wifi-off	Media	wifi, internet, off, disabled
+workspace	Interface	workspace, grid, template, layout, box
+wrench	Development	wrench, tool, adjust, build
+x	Status	cross, delete, remove, cancel
+x-circle	Status	cross, delete, remove, cancel, circle
+x-circle-fill	Status	cross, delete, remove, cancel, circle
+x-diamond	Status	check, tick, success, diamond
+x-diamond-fill	Status	check, tick, success, diamond
+x-hexagon	Status	check, tick, success, diamond
+x-hexagon-fill	Status	check, tick, success, diamond
+x-square	Status	cross, delete, remove, cancel, square
+x-square-fill	Status	cross, delete, remove, cancel, square
+youtube	Services	youtube, google
+zap	Symbols	zap, power, run, automate, lightning, bolt
+zap-off	Symbols	zap, power, run, automate, off, disabled
+zoom-in	Interface	zoom, in, maximize
+zoom-out	Interface	zoom, out, minimize

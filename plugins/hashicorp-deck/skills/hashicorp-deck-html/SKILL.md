@@ -54,6 +54,7 @@ Compose slide bodies from these primitives (all defined in the template and `ref
 
 - **`.row.split`** — a two-column layout (text + supporting visual/list), collapses to one column on narrow screens.
 - **`.cards`** — a responsive grid of metric/feature cards, each with a big `.num`, a mono `.cap` caption, and small `.desc` prose. Ideal for stats, comparisons, or a "by the numbers" slide.
+- **`.card .ico`** — a feature card led by a Flight icon in the kit's gradient square, then an `h3` and a `.desc`. Icons come only from the plugin's vendored Flight set; `../../assets/icons/flight.py ico <name>` prints the block. See "Icons" in `references/design-system.md`.
 - **`ul.clean`** — a bullet list with colored dots; each item a bold lead-in plus one tight sentence, all in a single aligned column.
 - **`.fix`** — a block with a colored left border and a small mono `.tag` chip; good for before/after, problem/cause pairs, or itemized takeaways.
 - **`pre`** — a dark code block with syntax-accent spans (`.c` comment, `.k` keyword, `.s` string, `.n` number).

@@ -10,8 +10,8 @@ another. The skills live here once, and projects install them.
 
 | Plugin | Skill | What it does |
 |---|---|---|
-| `hashicorp-deck` | `hashicorp-deck-html` | Builds single-file HTML5 scroll presentations in the HashiCorp brand style, with a monochrome foundation, sparing product-gradient accents, mono structural labels, scroll-reveal, side nav and keyboard paging. |
-| `hashicorp-deck` | `hashicorp-deck-htmltopptx` | Converts an existing HTML presentation into an editable HashiCorp-branded `.pptx`, re-typeset on the official CY26 presentation kit using Inter, the signature glow gradient and HashiCorp's own slide layouts. Light and dark share one layout grammar, so a deck can be rebuilt in either. It carries the content across rather than taking screenshots. |
+| `hashicorp-deck` | `hashicorp-deck-html` | Builds single-file HTML5 scroll presentations in the HashiCorp brand style, with a monochrome foundation, sparing product-gradient accents, mono structural labels, scroll-reveal, side nav and keyboard paging. Feature cards carry Flight icons. |
+| `hashicorp-deck` | `hashicorp-deck-htmltopptx` | Converts an existing HTML presentation into an editable HashiCorp-branded `.pptx`, re-typeset on the official CY26 presentation kit using Inter, the signature glow gradient and HashiCorp's own slide layouts. Light and dark share one layout grammar, so a deck can be rebuilt in either. It carries the content across rather than taking screenshots, and fills the kit's icon squares with the same Flight icons as the HTML cards. |
 | `ibm-deck` | `ibm-deck-htmltopptx` | Converts an existing HTML presentation into an editable IBM-branded `.pptx`, re-typeset on the official IBM template using IBM Plex, the Carbon palette and IBM's own slide layouts. It carries the content across rather than taking screenshots. |
 | `hashicorp-diagram` | `hashicorp-diagram-excalidraw` | Supplies HashiCorp-branded icons and Helios product colours for architecture diagrams drawn by hand in Excalidraw or Excalidraw+. Ships a stencil scene of 54 Flight icons and the individual SVGs. These are assets rather than a generator. |
 | `hashicorp-doc` | `hashicorp-doc-docx` | Builds customer-facing Microsoft Word documents in the HashiCorp house style, such as assessments, engagement reports, architecture reviews and other professional-services deliverables. Each has full-bleed cover art with the wordmark, a metadata block, a live table of contents, a revision-history table, one section per page under a `version / title` running header, rule-and-band recommendation tables carrying ID, Impact, Effort, Priority and Category, and the HashiCorp back cover. The output is an editable `.docx`, because the customer has to review and circulate it. |
@@ -84,6 +84,10 @@ plugins/<plugin>/
   written by `assets/build_template.py` on top of python-docx's empty package rather than
   derived from a real document, so it carries no customer content, revision ids, comments or
   author names. Every style in it is defined in that one file.
+- **Draw icons as vectors.** `hashicorp-deck` vendors 552 Flight icons once for both of its
+  skills. The `.pptx` skill converts each icon's SVG path data into a PowerPoint freeform, because
+  python-pptx cannot place an SVG and a PNG would need Chrome or Cairo on every machine that builds
+  a deck.
 - **Derive the dark template rather than forking it.** `hashicorp-deck`'s dark template is
   generated from its light one by `assets/make_dark.py`, so the two cannot drift in layout, slot
   indices or bullets. Re-run it after refreshing the light kit.
