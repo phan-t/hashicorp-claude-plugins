@@ -7,12 +7,12 @@ description: Convert an existing HTML presentation into an editable, IBM-branded
 
 This skill converts a **web deck into an editable IBM-branded `.pptx`**. It is a content
 conversion, not a screenshot: each HTML slide is read for its structure, and that content
-is re-typeset on the official IBM layouts. The source deck's colors, gradients and fonts
+is re-typeset on the official IBM layouts. The source deck's colors, gradients, and fonts
 are deliberately discarded — the output belongs to the IBM design system.
 
 Everything visual comes from `assets/ibm-brand-template.pptx`, the official IBM
-presentation template v2.0 (Plex), stripped to its master, 48 layouts and theme. Nothing
-in this skill sets a font, color or size that the template can supply. That is the whole
+presentation template v2.0 (Plex), stripped to its master, 48 layouts, and theme. Nothing
+in this skill sets a font, color, or size that the template can supply. That is the whole
 point: the template is authoritative, so decks converted in different repos come out the same.
 
 ## Setup
@@ -105,7 +105,7 @@ the layout keys they map to are in `references/layouts.md`.
 
 ## Rules that keep the output on-brand
 
-- **Never set a font, color, size or position.** Fill placeholders and let the template's
+- **Never set a font, color, size, or position.** Fill placeholders and let the template's
   theme resolve the rest. The one sanctioned exception is `Deck.code()`, which draws a panel
   because IBM ships no code layout.
 - **Sentence case, always.** IBM's own template says so on its title master: *"5 lines
@@ -113,7 +113,7 @@ the layout keys they map to are in `references/layouts.md`.
 - **Headlines carry no trailing full-stop.**
 - **Respect the slot counts.** IBM's data layouts hold three callouts, its column layouts
   hold four columns. If the content does not fit, split the slide — do not shrink type.
-- **Let the chrome regenerate.** Section tags, page numbers and footers come from the
+- **Let the chrome regenerate.** Section tags, page numbers, and footers come from the
   template. Strip the source deck's own `.pagenum` / `.secttag` text; the converter already
   ignores them.
 - **Keep the end slide.** `Deck.end()` appends IBM's closing lockup and takes no content.

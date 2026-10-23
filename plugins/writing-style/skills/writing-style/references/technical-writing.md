@@ -5,12 +5,12 @@ The craft the profile builds on. Where the profile says otherwise, the profile w
 ## Know the reader and what they will do next
 
 Before writing, name the reader and the action the text should leave them able to take: approve
-a change, run a command, choose an option or trust a finding. Cut whatever does not serve that
+a change, run a command, choose an option, or trust a finding. Cut whatever does not serve that
 action.
 
 ## Lead with the point
 
-Put the conclusion, decision or instruction first, then the reasoning. A reader who stops after
+Put the conclusion, decision, or instruction first, then the reasoning. A reader who stops after
 one sentence should still leave with the right idea. A commit subject, a section's first
 sentence and an email's opening line all do this job.
 
@@ -19,7 +19,7 @@ sentence and an email's opening line all do this job.
 - Use numbers with units and a source: "21 MB to 144 KB" rather than "much smaller".
 - Name things: the file, the function, the setting, the team.
 - Give the cause. "So", "because" and "which means" carry more than any adjective.
-- State the limits. Say what was not tested, what is assumed and what would change the answer.
+- State the limits. Say what was not tested, what is assumed, and what would change the answer.
 
 ## Say how it was checked
 

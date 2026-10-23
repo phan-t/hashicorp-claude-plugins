@@ -122,7 +122,12 @@ SMALL = {"a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or
 
 
 def load_profile_patterns(path):
-    """Return (regex, suggestion) pairs from the profile's ```patterns block."""
+    """Return (regex, level, suggestion) triples from the profile's ```patterns block.
+
+    A line is `regex => suggestion`, reported at the profile level. A line that starts with
+    `review: ` is reported at the review level instead, for a rule a regex can only
+    approximate.
+    """
     try:
         with open(os.path.expanduser(path), encoding="utf-8") as f:
             text = f.read()
@@ -136,9 +141,12 @@ def load_profile_patterns(path):
         line = raw.strip()
         if not line or line.startswith("#"):
             continue
+        level = "profile"
+        if line.startswith("review: "):
+            level, line = "review", line[len("review: "):]
         regex, _, hint = line.partition(" => ")
         try:
-            pairs.append((re.compile(regex.strip(), re.I), hint.strip() or "banned in profile"))
+            pairs.append((re.compile(regex.strip(), re.I), level, hint.strip() or "banned in profile"))
         except re.error as e:
             print(f"warning: bad profile pattern {regex!r}: {e}", file=sys.stderr)
     return pairs
@@ -472,7 +480,7 @@ def check(text, profile_patterns, kinds=None):
 
     hits = []
     rules = [(re.compile(r, re.I | re.M), lvl, cat, hint) for r, lvl, cat, hint in BUILTIN]
-    rules += [(rx, "profile", "profile", hint) for rx, hint in profile_patterns]
+    rules += [(rx, level, "profile", hint) for rx, level, hint in profile_patterns]
     for rx, level, category, hint in rules:
         for m in rx.finditer(masked):
             start = m.start() + (len(m.group(0)) - len(m.group(0).lstrip(" \n.!?")))

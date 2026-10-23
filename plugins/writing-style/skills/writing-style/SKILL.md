@@ -1,6 +1,6 @@
 ---
 name: writing-style
-description: Write, edit and review prose in Tony's own voice, as a technical writer would, with no AI slop. Use this skill whenever you are about to write prose someone will read, such as a README, docs, a commit message, a PR description, a design or decision paper, a report section, an email, a Slack message or a customer deliverable, and whenever the user asks to tighten, rewrite, de-slop, proofread or "make this sound like me". Also use it to learn: when the user edits a draft you wrote, corrects a word or phrase, says "I'd never say that", or points you at their own writing to study, update the style profile so the correction sticks. Not for code, only for the prose around it.
+description: Write, edit, and review prose in Tony's own voice, as a technical writer would, with no AI slop. Use this skill whenever you are about to write prose someone will read, such as a README, docs, a commit message, a PR description, a design or decision paper, a report section, an email, a Slack message, or a customer deliverable, and whenever the user asks to tighten, rewrite, de-slop, proofread or "make this sound like me". Also use it to learn: when the user edits a draft you wrote, corrects a word or phrase, says "I'd never say that", or points you at their own writing to study, update the style profile so the correction sticks. Not for code, only for the prose around it.
 ---
 
 # Writing style
@@ -31,7 +31,7 @@ conflict, the profile wins, because it records what the author actually chose.
 
 Write the piece the way the author would and do not write a draft to fix later. Most slop gets in
 through filler, so the fastest route to clean prose is having something specific to say in
-each sentence: a number, a name, a cause or a consequence.
+each sentence: a number, a name, a cause, or a consequence.
 
 ## Checking
 
@@ -43,8 +43,8 @@ python3 assets/slop_check.py - < draft.txt
 python3 assets/slop_check.py report.docx
 ```
 
-For text that is going into chat, a commit message or a tool rather than a file, write it to a
-scratch file first and check that. The checker skips fenced code, inline code and double-quoted phrases, and it reads
+For text that is going into chat, a commit message, or a tool rather than a file, write it to a
+scratch file first and check that. The checker skips fenced code, inline code, and double-quoted phrases, and it reads
 the profile's banned patterns automatically (`--profile` overrides the path). A Word file is
 read directly, and its hits are located by paragraph (`¶42`) or footnote instead of by line.
 The summary line also counts "rather than", because a contrast used in every other paragraph
@@ -65,12 +65,12 @@ that repeats what the reader just saw. After the checker, read the final text on
 each section of `references/ai-slop.md` and each rule in the profile:
 
 1. **Read everything a reader will see,** including headings, labels, card titles, column
-   headers, captions and diagram text. Labels follow the same rules as sentences.
+   headers, captions, and diagram text. Labels follow the same rules as sentences.
 2. **Read text you carried over from a source** as closely as text you wrote. A rebuild or
    an edit inherits the source's slop unless someone removes it.
 3. **Reread your own fixes.** Swapping one pattern for another (every "X, not Y" becoming
    "rather than") makes a new tell.
-4. **Ask of each closing line** whether it says anything the slide, table or paragraph above
+4. **Ask of each closing line** whether it says anything the slide, table, or paragraph above
    it did not. If not, cut it.
 
 Do this pass even when the checker reports nothing. Fix what it finds, then run the checker
@@ -85,8 +85,8 @@ The profile grows from evidence the author supplies, never from text Claude wrot
 `references/learning.md` whenever one of these happens:
 
 - The user edits text you wrote. Diff their version against yours.
-- The user corrects a word, phrase or habit ("don't say X", "too formal", "I'd never write that").
-- The user asks you to study their writing, whether it is a file, a folder, a doc or a git range.
+- The user corrects a word, phrase, or habit ("don't say X", "too formal", "I'd never write that").
+- The user asks you to study their writing, whether it is a file, a folder, a doc, or a git range.
 - The user says a rule is wrong, or a rule in the profile contradicts what they just did.
 
 Record what was learned in the profile in the same turn, then tell the user in one line what

@@ -234,6 +234,68 @@ def table(*rows):
     return f"<w:tbl>{cells}</w:tbl>"
 
 
+SEED = os.path.join(HERE, "..", "skills", "writing-style", "references", "seed-profile.md")
+
+
+class ProfilePatterns(unittest.TestCase):
+    def load(self, block):
+        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as f:
+            f.write("```patterns\n" + block + "\n```\n")
+        self.addCleanup(os.unlink, f.name)
+        return slop_check.load_profile_patterns(f.name)
+
+    def test_lines_default_to_the_profile_level(self):
+        [(_, level, hint)] = self.load(r"\bcolor\b => colour (R7)")
+        self.assertEqual((level, hint), ("profile", "colour (R7)"))
+
+    def test_review_prefix_sets_the_level(self):
+        [(rx, level, _)] = self.load(r"review: \bfoo\b => bar")
+        self.assertEqual(level, "review")
+        self.assertTrue(rx.search("a foo here"))
+        levels = [h[2] for h in slop_check.check("a foo here", [(rx, level, "bar")])]
+        self.assertEqual(levels, ["review"])
+
+
+class SerialComma(unittest.TestCase):
+    """The seed profile's R4 pattern: a list of three or more missing its serial comma.
+
+    It is a review pattern because a clause before a comma looks like a list item to a regex:
+    "If it is offline, say so and inline the fonts" is flagged.
+    """
+
+    FLAG = (
+        "It uses Inter, the signature glow gradient and HashiCorp's own layouts.",
+        "Never set a font, colour, size or border.",
+        "Write, edit and review prose.",
+        "Asks carry an owner, a cost and a date.",
+    )
+    PASS = (
+        "It uses Inter, the signature glow gradient, and HashiCorp's own layouts.",
+        "Never set a font, colour, size, or border.",
+        "Vault and Terraform share a module.",
+        "Captions use Inter, which the template embeds.",
+        "Before writing, whether or not it ships, check it.",
+        "No layout map, so the slot map and the list are shared.",
+    )
+
+    def setUp(self):
+        self.patterns = [p for p in slop_check.load_profile_patterns(SEED) if "(R4)" in p[2]]
+        self.assertEqual(len(self.patterns), 1)
+
+    def hits(self, text):
+        return [h for h in slop_check.check(text, self.patterns) if h[3] == "profile"]
+
+    def test_flags(self):
+        for text in self.FLAG:
+            with self.subTest(text=text):
+                self.assertEqual([h[2] for h in self.hits(text)], ["review"])
+
+    def test_passes(self):
+        for text in self.PASS:
+            with self.subTest(text=text):
+                self.assertEqual(self.hits(text), [])
+
+
 class DocxStructure(unittest.TestCase):
     def test_table_echo_after_a_caption(self):
         body = (para(run("Results"), style="Heading1")

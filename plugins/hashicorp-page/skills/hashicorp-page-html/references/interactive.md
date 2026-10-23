@@ -42,7 +42,7 @@ truth.
 
 ## 2. Filter bar — one dimension, recomputed
 
-A sticky `.filterbar` of `.fbtn` buttons that re-cuts every chart, table and hero stat on the
+A sticky `.filterbar` of `.fbtn` buttons that re-cuts every chart, table, and hero stat on the
 page. The pattern:
 
 ```html
@@ -75,7 +75,7 @@ Rules:
 - Every `.sectag[data-scope]` and `.fnote` updates with the filter, so a screenshot of a
   filtered view is unambiguous about what it is showing.
 - A section whose figure cannot be filtered gets `.sectag.solid` naming its fixed scope.
-- Filtering only ever narrows rows. It must never change a definition, a denominator rule or a
+- Filtering only ever narrows rows. It must never change a definition, a denominator rule, or a
   date window; those belong in the prose.
 
 ## 3. Chart.js — when a chart must be interactive

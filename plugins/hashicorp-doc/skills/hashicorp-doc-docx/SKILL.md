@@ -1,6 +1,6 @@
 ---
 name: hashicorp-doc-docx
-description: Build a HashiCorp-branded Microsoft Word document — an assessment, engagement report, architecture review, health check or professional-services deliverable that goes to a customer as an editable .docx. Full-bleed cover art with the wordmark, a metadata block, a live table of contents, a revision-history table, numbered sections under a `version / title` running header, rule-and-band recommendation tables carrying ID / Impact / Effort / Priority / Category, and the HashiCorp back cover. Use this skill whenever the user wants a Word document, .docx, assessment, engagement report, findings report, architecture or platform review, discovery readout or customer-facing deliverable in the HashiCorp house style — especially when they mention a previous assessment built this way. For slides use hashicorp-deck-htmltopptx; for a self-contained HTML report use hashicorp-page-html.
+description: Build a HashiCorp-branded Microsoft Word document — an assessment, engagement report, architecture review, health check, or professional-services deliverable that goes to a customer as an editable .docx. Full-bleed cover art with the wordmark, a metadata block, a live table of contents, a revision-history table, numbered sections under a `version / title` running header, rule-and-band recommendation tables carrying ID / Impact / Effort / Priority / Category, and the HashiCorp back cover. Use this skill whenever the user wants a Word document, .docx, assessment, engagement report, findings report, architecture or platform review, discovery readout, or customer-facing deliverable in the HashiCorp house style — especially when they mention a previous assessment built this way. For slides use hashicorp-deck-htmltopptx; for a self-contained HTML report use hashicorp-page-html.
 ---
 
 # HashiCorp Word document
@@ -12,7 +12,7 @@ do that job.
 
 Everything visual comes from `assets/hashicorp-doc-template.docx` — the styles, the page
 geometry, the wordmark on the cover footer. You drive it through `assets/hashicorp_doc.py`,
-which fills that template in and **never sets a font, size or colour of its own**. That is
+which fills that template in and **never sets a font, size, or colour of its own**. That is
 the whole point: assessments written in different repos come out the same.
 
 `assets/build_template.py` regenerates the template, and is the only place a style is
@@ -152,7 +152,7 @@ including table cells and the cover metadata block.
 
 ## Rules that keep the output on-brand
 
-- **Never set a font, colour, size or border.** Use the styles the template defines. If a
+- **Never set a font, colour, size, or border.** Use the styles the template defines. If a
   document needs something the template has no style for, add the style in
   `build_template.py` so every future document gets it too.
 - **Sentence case for headings, title case for the document title.** No trailing full stop

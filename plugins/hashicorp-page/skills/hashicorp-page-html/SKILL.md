@@ -1,6 +1,6 @@
 ---
 name: hashicorp-page-html
-description: Build a single-file, HashiCorp-branded HTML page document — a long-form scrolling report, briefing paper, decision paper or leadership readout, not a slide deck. Black top bar and hero with a headline-number strip, numbered sections on alternating backgrounds, dense evidence tables with status pills, CSS-drawn charts, ranked asks and a provenance footer. Use this skill whenever the user wants a report, readout, briefing, business case, decision paper, options paper, impact analysis, pipeline or capacity review, half/quarter plan, or any evidence-heavy internal document as a self-contained .html file — especially for leadership audiences, or when they reference this style or a previous document built this way. For slides use hashicorp-deck-html instead.
+description: Build a single-file, HashiCorp-branded HTML page document — a long-form scrolling report, briefing paper, decision paper, or leadership readout, not a slide deck. Black top bar and hero with a headline-number strip, numbered sections on alternating backgrounds, dense evidence tables with status pills, CSS-drawn charts, ranked asks, and a provenance footer. Use this skill whenever the user wants a report, readout, briefing, business case, decision paper, options paper, impact analysis, pipeline or capacity review, half/quarter plan, or any evidence-heavy internal document as a self-contained .html file — especially for leadership audiences, or when they reference this style or a previous document built this way. For slides use hashicorp-deck-html instead.
 ---
 
 # HashiCorp-style HTML page document
@@ -20,7 +20,7 @@ user wants slides, use `hashicorp-deck-html`.
 2. **Read `references/components.md`** for the block grammar. Compose sections from those blocks
    rather than writing new markup patterns.
 3. **Start from `assets/template.html`.** It has the complete stylesheet, the top bar with the
-   inlined logomark, the hero, a section skeleton and the footer. Build inside it.
+   inlined logomark, the hero, a section skeleton, and the footer. Build inside it.
 4. **Only if the document needs to be re-cut by the reader**, read `references/interactive.md`.
    The default is no JavaScript at all.
 5. **Write the file into the project** at the path the user asked for, or alongside the source
@@ -100,7 +100,7 @@ The design carries authority, so the prose does not have to perform it.
 - [ ] One gradient chosen for the document; accents sparse; Vault is `#FFCF25`.
 - [ ] Chart series use `--c1`…`--c4` in the same order in every figure.
 - [ ] Every table inside `.tablebox`; numeric columns `td.num`.
-- [ ] Asks carry an owner, a cost and a date.
+- [ ] Asks carry an owner, a cost, and a date.
 - [ ] Footer names every data source with its window and extract date.
 - [ ] Confidentiality bar present and specific, or deliberately absent.
 - [ ] Written to the agreed path, opened, and eyeballed.

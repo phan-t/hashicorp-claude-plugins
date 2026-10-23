@@ -63,7 +63,7 @@ exported PDF actually used — not by assuming.
 The reference document named Helvetica Neue and got away with it *because Google Docs
 embedded the font*. Naming a face is a request; embedding it is what makes it happen.
 
-So the template **embeds Inter** — regular, bold, italic and bold-italic, in
+So the template **embeds Inter** — regular, bold, italic, and bold-italic, in
 `assets/fonts/`, wired into `fontTable.xml` by `build_template.py`. Inter is SIL OFL 1.1,
 which explicitly permits embedding and redistribution; `fonts/OFL.txt` travels with it.
 Word for Mac honours embedded fonts (unlike PowerPoint), and so does Word for Windows, so
@@ -146,7 +146,7 @@ pulls back 71000 EMU to set the mark flush with the left margin.
 
 The art occupies the top 4.20in of the page and the text flows below it, so the cover has
 about **5.75in of text height**, not the usual 8.65in. That is roughly a one-line title plus
-a subtitle, a date and eight metadata rows.
+a subtitle, a date, and eight metadata rows.
 
 `Doc.cover()` budgets this before it writes anything and spends two spacers in order — the
 blank line between subtitle and date, then the 18pt gap above the metadata block — before it

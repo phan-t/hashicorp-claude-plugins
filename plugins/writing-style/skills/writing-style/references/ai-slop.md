@@ -24,7 +24,7 @@ anything a person writes. Use the plain word, or better, the specific fact.
 | streamline, optimise (vaguely) | say what got faster, by how much |
 | empower, enable, unlock, elevate | say what the reader can now do |
 | crucial, vital, pivotal, key (as an adjective) | say what breaks without it |
-| landscape, realm, ecosystem, space (figurative) | name the actual market, field or set of tools |
+| landscape, realm, ecosystem, space (figurative) | name the actual market, field, or set of tools |
 | journey, embark | project, migration, rollout |
 | tapestry, testament to, symphony, beacon | delete the metaphor |
 | foster, showcase, underscore, boast | build, show, confirm, have |

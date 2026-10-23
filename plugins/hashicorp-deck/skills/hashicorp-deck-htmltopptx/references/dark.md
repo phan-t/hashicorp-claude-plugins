@@ -25,11 +25,11 @@ the dark kit is still at v2 from the same June 2025 drop. They have nothing in c
 `product_cover()` have nowhere to go.
 
 `mode="dark"` solves that by **deriving the dark template from the light one**. Every layout
-name, placeholder index, list style, bullet, gradient and font is literally the same object
+name, placeholder index, list style, bullet, gradient, and font is literally the same object
 light mode uses; only the neutrals flip. Verified: layout names identical, stage identical,
 and every layout's placeholder set matches light index-for-index and pixel-for-pixel.
 
-That means dark mode needs no layout map, no slot map and no unsupported list — it shares
+That means dark mode needs no layout map, no slot map, and no unsupported list — it shares
 `_LIGHT_STRUCTURE` wholesale, and `metrics()`, `product_cover()`, the glow gradient and the
 icon containers all work exactly as they do in light.
 

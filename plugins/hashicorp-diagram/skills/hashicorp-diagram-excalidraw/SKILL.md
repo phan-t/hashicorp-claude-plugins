@@ -1,6 +1,6 @@
 ---
 name: hashicorp-diagram-excalidraw
-description: Supplies HashiCorp-branded icons and Helios product colours for architecture diagrams drawn in Excalidraw or Excalidraw+. Ships a stencil scene of 54 Flight icons — product marks, clouds, infrastructure, security and signal vocabulary — with colours pinned to the Helios design system, plus the individual SVGs for dragging in one at a time. Use this skill whenever the user is drawing, editing or asking about a HashiCorp architecture diagram, a Terraform/Vault/Consul/Nomad/Boundary/Packer/Waypoint topology, or wants the correct product colour or icon for a diagram. Also use it to answer "what colour is Vault" or "which icon for a load balancer" — the design system reference is authoritative over memory.
+description: Supplies HashiCorp-branded icons and Helios product colours for architecture diagrams drawn in Excalidraw or Excalidraw+. Ships a stencil scene of 54 Flight icons — product marks, clouds, infrastructure, security, and signal vocabulary — with colours pinned to the Helios design system, plus the individual SVGs for dragging in one at a time. Use this skill whenever the user is drawing, editing, or asking about a HashiCorp architecture diagram, a Terraform/Vault/Consul/Nomad/Boundary/Packer/Waypoint topology, or wants the correct product colour or icon for a diagram. Also use it to answer "what colour is Vault" or "which icon for a load balancer" — the design system reference is authoritative over memory.
 ---
 
 # HashiCorp diagram assets for Excalidraw
@@ -35,7 +35,7 @@ the hand-drawn ones on-brand. It does not emit diagrams — see "When not to use
 
 Same restraint as the deck system: the diagram is monochrome, and colour identifies products.
 
-- **Structure is neutral.** Boxes, groups, arrows and labels in `#0c0c0e` on white, or
+- **Structure is neutral.** Boxes, groups, arrows, and labels in `#0c0c0e` on white, or
   `#fafafa` fills for containers. Never a saturated background.
 - **Product colour marks a product, nothing else.** A Vault box gets the Vault mark; it does
   not get a yellow fill. If a diagram has more than a handful of coloured moments, the colour

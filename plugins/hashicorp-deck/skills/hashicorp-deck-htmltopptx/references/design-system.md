@@ -11,7 +11,7 @@ Presentation Kit v4**, stripped to what a builder needs:
 
 - 1 slide master, 47 slide layouts, 1 theme, the embedded Inter faces, and the media those
   layouts reference
-- no demo slides, no notes slides, no revision or authorship history
+- no demo slides, no notes slides, and no revision or authorship history
 - 26 MB → 6 MB, which is why it can live in a plugin
 
 **Two layouts were dropped**: *Do cloud right* and *Dark*. Neither has a single
@@ -90,7 +90,7 @@ installed locally. JetBrains Mono is never embedded.
 ## Color
 
 The signature **glow gradient** — four stops at 45° — is what makes a HashiCorp slide look
-like one. The layouts apply it to metric numbers, the metric rules and the pull-quote, so
+like one. The layouts apply it to metric numbers, the metric rules, and the pull-quote, so
 you get it by filling those slots and nothing else:
 
 | Stop | Position |
@@ -144,7 +144,7 @@ swapped. `references/dark.md` has the derivation and the dark values. Re-run
 `hashicorp-deck-html` builds web decks on a slightly different palette: a monochrome
 foundation with `--tf-purple` accents and two named gradients (`--grad-ilm`,
 `--grad-slm`). Those are the web brand; this file is the deck kit's own. They agree on
-Inter, JetBrains Mono and the product hues, and diverge on gradients — the kit uses one
+Inter, JetBrains Mono, and the product hues, and diverge on gradients — the kit uses one
 four-stop glow everywhere. **When converting, take the kit's version.** The whole point of
 the conversion is that the source deck's colours are discarded.
 

@@ -15,7 +15,7 @@ Light-mode CY26 Presentation Kit v4, stripped to its master, 47 layouts, theme a
 embedded Inter. **`Deck(mode="dark")`** — or `--dark` on the converter — builds the same
 deck on black: the dark template is derived from this one, so every layout, slot, bullet and
 gradient is identical and nothing is unavailable. `references/dark.md` covers it, and
-`assets/make_dark.py` regenerates it when the light template is refreshed. Nothing in this skill sets a font, color or size that a layout can supply.
+`assets/make_dark.py` regenerates it when the light template is refreshed. Nothing in this skill sets a font, color, or size that a layout can supply.
 That is the whole point: the kit is authoritative, so decks converted in different repos
 come out the same.
 
@@ -129,7 +129,7 @@ the layout keys they map to are in `references/layouts.md`.
 
 ## Rules that keep the output on-brand
 
-- **Never set a font, color, size or position.** Fill placeholders and let the layout's list
+- **Never set a font, color, size, or position.** Fill placeholders and let the layout's list
   styles resolve the rest. The sanctioned exceptions are `code()`, `table()`, `chart()`, the
   attribution line on `quote()` and the icons `columns()` draws on the kit's icon squares.
   These are the places where the kit ships no placeholder at all.

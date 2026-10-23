@@ -9,8 +9,8 @@ Last updated: 2026-10-07
 
 ## Voice
 
-Plain, specific and explanatory. Writes as an engineer explaining a decision to a peer: what
-was done, why, what it costs and how it was checked. Prefers a full sentence that carries its
+Plain, specific, and explanatory. Writes as an engineer explaining a decision to a peer: what
+was done, why, what it costs, and how it was checked. Prefers a full sentence that carries its
 reason over a punchy fragment. Australian English.
 
 ## Rules
@@ -38,9 +38,10 @@ Contrast fragments read as slogans. Make the contrast part of a sentence with a 
 - Evidence (README, c20f27f): "ID / Impact / Effort / Priority / Category" became "ID, Impact,
   Effort, Priority and Category".
 
-### R4. No Oxford comma · tentative
-- Evidence (README, c20f27f): "…Inter, the signature glow gradient and HashiCorp's own slide
-  layouts."
+### R4. Oxford comma in every list · firm
+Put a comma before the "and" or "or" that ends a list of three or more. HashiCorp's Voice,
+Style & Language guide requires it.
+- Evidence (author, 2026-10-24): asked for the serial comma "consistent across everything".
 
 ### R5. Plain statement over clever framing · tentative
 - Evidence (README, c20f27f): "Name a font and you have only made a request." became "Naming a
@@ -53,13 +54,13 @@ Contrast fragments read as slogans. Make the contrast part of a sentence with a 
 
 ### R7. Australian spelling · tentative
 colour, modelled, artefact, utilisation, organisation, behaviour, licence (noun). Leave
-identifiers, CSS properties and product names alone.
+identifiers, CSS properties, and product names alone.
 - Evidence: "colours" in the README plugin table, "artefact" in hashicorp-page-html, git
   author timezone +1000.
 
 ### R8. Commit messages · tentative
 Imperative subject line under about 60 characters with no full stop. The body explains why the
-change was made, what it rules out and how it was verified. Close with what did not change when
+change was made, what it rules out, and how it was verified. Close with what did not change when
 that is useful ("No change to any skill.").
 - Evidence: git log of hashicorp-claude-plugins.
 
@@ -75,6 +76,7 @@ case-insensitive. Lines starting with `#` are comments.
 \bbehavior(s|al)?\b => behaviour (R7)
 \bmodeled\b => modelled (R7)
 \w+ / \w+ / \w+ => a comma list with "and" (R3)
+review: \b[\w'-]+, (?!(and|or|so|but|then|whether|which|because|if|when|where|while|on|in|with|for|to)\b)[\w'-]+( (?!(and|or)\b)[\w'-]+){0,3} (and|or) [\w'-]+ => a comma before the last "and" or "or" (R4)
 ```
 
 ## Retired

@@ -9,7 +9,7 @@ Keeping one copy means an HTML deck and its .pptx show the same icon in the same
 | Source | [Helios icon library](https://helios.hashicorp.design/icons/library) |
 | Package | `@hashicorp/flight-icons` 5.3.0, MPL-2.0 (`flight/LICENSE.md`) |
 | Contents | 552 of Flight's 24 px single-colour icons, unmodified |
-| Index | `flight/catalog.tsv`: name, category and Flight's own keywords |
+| Index | `flight/catalog.tsv`: name, category, and Flight's own keywords |
 
 The `-color` variants are left out, because a multi-colour mark clashes with the kit's
 pastel gradient square. The animated `loading` and `running` icons are left out too; their

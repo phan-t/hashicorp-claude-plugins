@@ -65,7 +65,7 @@ built before this skill existed carry the old value; leave them, do not retro-fi
 - **Gradients** appear in exactly three places: the 4px hero bottom border, the 56x4 `.keyline`
   under a section heading, and one accented phrase in the H1. Never as a fill.
 - Pick **one gradient per document** and use it for the hero border and most keylines:
-  `--grad-infra` for capacity, coverage, pipeline and operating-model work, `--grad-security`
+  `--grad-infra` for capacity, coverage, pipeline, and operating-model work, `--grad-security`
   for delivery and impact reporting. Switch a single keyline to the other gradient to mark a
   section that changes subject.
 - **Product hues encode that product and nothing else.** A `.chip.vault` means Vault. A card's
@@ -115,7 +115,7 @@ whenever the document is confidential or will be read on an air-gapped machine, 
 - `section{padding:54px 0}` with a 1px bottom rule; alternate `.alt` so no two consecutive
   sections share a background.
 - Sections are numbered `01`, `02`, … in `.seclabel .idx` and the numbers are contiguous.
-  **When you add, remove or reorder a section, renumber them.**
+  **When you add, remove, or reorder a section, renumber them.**
 - Give each section an `id` when the document is long enough to link into.
 - A document runs: top bar → optional confidentiality bar → hero with `.statstrip` → numbered
-  sections → footer carrying preparer, date, status and data provenance.
+  sections → footer carrying preparer, date, status, and data provenance.

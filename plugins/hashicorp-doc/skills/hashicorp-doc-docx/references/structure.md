@@ -84,7 +84,7 @@ Number within an area, and sub-number when one recommendation has variants that 
 chosen between: `ARC-A1`, `ARC-A2`, `ARC-A3` are three options for the same problem;
 `ARC-B` is a different problem.
 
-Impact, Effort and Priority are a judgement, so make it. A table where everything is High
+Impact, Effort, and Priority are a judgement, so make it. A table where everything is High
 Impact / High Priority has told the reader nothing.
 
 ## Assessment areas
@@ -110,7 +110,7 @@ with a sentence, it belongs in Recommendations instead.
 
 ## Resources
 
-A numbered list of links to the HashiCorp Validated Designs, operating guides and tutorials
+A numbered list of links to the HashiCorp Validated Designs, operating guides, and tutorials
 the recommendations lean on. Link every recommendation that has a published guide behind
 it — it turns "adopt namespaces" into something the customer's team can start on Monday.
 
@@ -121,7 +121,7 @@ it — it turns "adopt namespaces" into something the customer's team can start 
 - The customer is named in full once, then by short name: *Westpac Banking Corporation,
   commonly referred to as "Westpac"*.
 - Spell out an acronym on first use — Performance Replication (PR), Disaster Recovery (DR).
-- Prefer the customer's own vocabulary for their zones, teams and systems. Using their
+- Prefer the customer's own vocabulary for their zones, teams, and systems. Using their
   names for things is what makes the document feel like it was written for them.
 - No hedging where you have evidence, and no confidence where you do not. "It should be
   noted that consumers were not directly involved in this engagement" is worth more than a

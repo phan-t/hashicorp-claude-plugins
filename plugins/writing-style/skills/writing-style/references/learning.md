@@ -10,7 +10,7 @@ where evidence comes from.
   author made against an alternative they saw.
 - **Explicit corrections in chat**, such as "don't use leverage", "too formal" or
   "I write colour, not color".
-- **Text the author wrote themselves**, such as documents, messages and their own edits in git.
+- **Text the author wrote themselves**, such as documents, messages, and their own edits in git.
 
 What does not count:
 
@@ -35,7 +35,7 @@ What does not count:
 
 For `/writing-style learn <path, glob or git range>`:
 
-1. Collect the author's text and leave out code, quotations and Claude-authored material.
+1. Collect the author's text and leave out code, quotations, and Claude-authored material.
    For a git range, `git log -p --author=<them>` shows their own edits, and edits to prose are
    worth more than new prose.
 2. Look for choices that recur: spelling, punctuation (Oxford comma, dashes, semicolons),
@@ -59,7 +59,9 @@ Add it under `## Rules` with the next free id:
   tentative rule is seen again, add the evidence line and change the label.
 - If the rule can be caught by a regular expression, also add a line to the `patterns` block,
   as `regex => suggestion (R9)`. Test the pattern against the evidence before saving it, and
-  make sure it does not hit ordinary prose that obeys the rule.
+  make sure it does not hit ordinary prose that obeys the rule. When a regex can only
+  approximate the rule, as with a list that is missing its serial comma, start the line with
+  `review: ` so its hits are reported as judgement calls and do not fail the check.
 - Update the `Last updated` date.
 
 ## When the author contradicts a rule
@@ -77,5 +79,5 @@ writing compared with Slack, ask once and split the rule by context rather than 
   and keep the two strongest evidence lines for each.
 - Do not record anything already in `ai-slop.md` or `technical-writing.md` unless the author's
   rule differs from it.
-- Never put customer names, confidential figures or private content in evidence lines. Paraphrase
+- Never put customer names, confidential figures, or private content in evidence lines. Paraphrase
   the example or swap in a placeholder.
