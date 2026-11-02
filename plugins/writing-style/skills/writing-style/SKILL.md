@@ -48,7 +48,8 @@ scratch file first and check that. The checker skips fenced code, inline code, a
 the profile's banned patterns automatically (`--profile` overrides the path). A Word file is
 read directly, and its hits are located by paragraph (`¶42`) or footnote instead of by line.
 The summary line also counts "rather than", because a contrast used in every other paragraph
-becomes its own tell.
+becomes its own tell. A heading that names a published work by its real title is flagged as
+title case; add it to the profile's `titles` block so the checker leaves it alone.
 
 - **`slop` hits** are fixed, every time.
 - **`review` hits** are judgement calls. Fix them unless the context earns the word, such as

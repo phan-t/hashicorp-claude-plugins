@@ -76,7 +76,16 @@ case-insensitive. Lines starting with `#` are comments.
 \bbehavior(s|al)?\b => behaviour (R7)
 \bmodeled\b => modelled (R7)
 \w+ / \w+ / \w+ => a comma list with "and" (R3)
-review: \b[\w'-]+, (?!(and|or|so|but|then|whether|which|because|if|when|where|while|on|in|with|for|to)\b)[\w'-]+( (?!(and|or)\b)[\w'-]+){0,3} (and|or) [\w'-]+ => a comma before the last "and" or "or" (R4)
+review: \b[\w'-]+, (?!(and|or|so|but|then|whether|which|because|if|when|where|while|on|in|with|for|to|specifically|including|namely|such|like|especially|particularly|notably|mainly|mostly|e\.g|i\.e)\b)[\w'-]+( (?!(and|or)\b)[\w'-]+){0,3} (and|or) [\w'-]+ => a comma before the last "and" or "or" (R4)
+```
+
+## Titles
+
+Headings that name a published work or product by its real title, one per line, exactly as
+written. The checker leaves their capitals alone.
+
+```titles
+# For example, a line reading: The Staff Engineer's Path
 ```
 
 ## Retired

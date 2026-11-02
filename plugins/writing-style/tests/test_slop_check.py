@@ -153,6 +153,191 @@ class TableEcho(PatternCase):
     )
 
 
+class UnsourcedHedge(PatternCase):
+    CATEGORY = "unsourced hedge"
+    FLAG = (
+        "Hashes sensitive values with HMAC-SHA-256, which is expected to stay secure.",
+        "The cipher is expected to be secure until 2035.",
+        "Both keys are expected to remain valid.",
+    )
+    PASS = (
+        "NIST expects HMAC-SHA-256 to stay secure.",
+        "Latency is expected to remain under 10 ms at that load.",
+        "Output is expected to be JSON.",
+        "The migration is expected to be complete by March.",
+    )
+
+
+class UnmeasuredSpeed(PatternCase):
+    CATEGORY = "unmeasured speed"
+    FLAG = (
+        "Lets keys move to a new algorithm quickly if the timeline moves earlier.",
+        "The cluster rapidly recovers.",
+    )
+    PASS = (
+        "The test ran quickly, in 40 ms.",
+        "Rotation finishes within 40 ms.",
+        "The market is rapidly evolving.",  # reported as slop vocabulary instead
+    )
+
+
+class VagueStatus(PatternCase):
+    CATEGORY = "vague status"
+    FLAG = (
+        "Planned for an upcoming release.",
+        "Planned for a future release.",
+        "Currently targeted for version 2.3, planned for March 2027.",
+        "This lands in a future version.",
+    )
+    PASS = (
+        "Planned for Vault 2.3, due in March 2027.",
+        "No release is assigned yet.",
+        "Requires Python 3.10 or a later version.",
+        "Upgrade to a later release before enabling it.",
+        "Future versions may drop the flag.",
+        "The flag is deprecated and will be removed in a future release.",
+    )
+
+
+class OwnerlessCommitment(PatternCase):
+    CATEGORY = "ownerless commitment"
+    FLAG = (
+        "The remaining items can be raised with product management as requirements.",
+        "The gap will be escalated with support.",
+    )
+    PASS = (
+        "Tony will raise the remaining items with product management.",
+        "Logs can be reviewed with grep.",
+        "The call can be followed up with an email.",
+    )
+
+
+class VagueReferent(PatternCase):
+    CATEGORY = "vague referent"
+    FLAG = (
+        "The customer can check the mechanism it uses against this.",
+        "Check it against this. Then rotate.",
+        "| Key | Check against this. |",
+    )
+    PASS = (
+        "The customer can check the mechanism against FIPS 203.",
+        "I agree with this.",
+        "Check this against the standard.",
+    )
+
+
+class UnnamedSet(PatternCase):
+    CATEGORY = "unnamed set"
+    FLAG = (
+        "It aligns with the main post-quantum cryptography standards.",
+        "It aligns with the main standards.",
+    )
+    PASS = (
+        "The main options are Raft and Consul.",
+        "The main standards: FIPS 203, FIPS 204, and FIPS 205.",
+        "It aligns with FIPS 203 and FIPS 204.",
+    )
+
+
+class PersonifiedLabel(PatternCase):
+    CATEGORY = "personified label"
+    FLAG = (
+        "| Measure | What it asks | Vault 2.2.0 |",
+        "## What it asks",
+        "What they want",
+    )
+    PASS = (
+        "| Measure | Recommendation | Vault 2.2.0 |",
+        "## What it does",
+        "## What this covers",
+        "The advisory lists what it asks of operators.",
+    )
+
+
+class Emoji(PatternCase):
+    CATEGORY = "emoji"
+    FLAG = (
+        "Shipped 🚀",
+        "- [ ] Ship the note 🚀 📅 2026-11-06",
+        "Done ✅ 2026-10-27",  # not a checkbox line
+    )
+    PASS = (
+        "- [ ] Ship the note 📅 2026-11-06",
+        "- [x] Draft the note ✅ 2026-10-27",
+        "- [ ] Follow up 🔁 every week 📅 2026-11-13",
+        "- [ ] Rotate keys ⏫ ⏳ 2026-11-10",
+    )
+
+
+class TitleCase(unittest.TestCase):
+    def hits(self, text, titles=frozenset()):
+        return [h for h in slop_check.check(text, [], titles=titles) if h[3] == "title case"]
+
+    def test_flags_a_title_case_heading(self):
+        self.assertEqual(len(self.hits("## Test Results Summary\n\nSee Test Results Summary.")), 1)
+
+    def test_skips_a_listed_title(self):
+        self.assertEqual(self.hits("# The Staff Engineer's Path", {"The Staff Engineer's Path"}), [])
+
+    def test_skips_an_italic_title(self):
+        self.assertEqual(self.hits("# *The Staff Engineer's Path*"), [])
+
+    def test_titles_block_is_read(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as f:
+            f.write("```titles\n# a comment\nThe Staff Engineer's Path\n```\n")
+        self.addCleanup(os.unlink, f.name)
+        self.assertEqual(slop_check.load_profile_titles(f.name), {"The Staff Engineer's Path"})
+
+
+SPLIT = "| Measure | Vault | Vault capability |\n|---|---|---|\n| A | Yes | Transit |\n"
+MERGED = "| Measure | Vault 2.2.0 |\n|---|---|\n| A | Transit |\n"
+
+
+class HeaderDrift(PatternCase):
+    CATEGORY = "header drift"
+    FLAG = (SPLIT + "\n" + SPLIT + "\n" + MERGED,)
+    PASS = (
+        SPLIT + "\n" + SPLIT,
+        "| Component | Before |\n|---|---|\n| A | 1 |\n\n| Component | After |\n|---|---|\n| A | 2 |\n",
+        "| Region | 2025 cost |\n|---|---|\n| A | 1 |\n\n| Region | 2026 cost |\n|---|---|\n| A | 2 |\n",
+        # A word shared with a different column.
+        "| Product | Entitled | Used |\n|---|---|---|\n| A | 1 | 1 |\n\n"
+        "| Product | Used | Usage / entitled |\n|---|---|---|\n| A | 1 | 1 |\n",
+    )
+
+    def test_reports_the_later_table_once(self):
+        hits = [h for h in slop_check.check(SPLIT + "\n" + SPLIT + "\n" + MERGED, []) if h[3] == "header drift"]
+        self.assertEqual([(h[0], h[4]) for h in hits], [(9, "Vault 2.2.0")])
+
+    def test_docx_header_row(self):
+        body = table(["Measure", "Vault"], ["A", "Yes"]) + table(["Measure", "Vault capability"], ["A", "Yes"])
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "drift.docx")
+            write_docx(path, body)
+            text, _, kinds = slop_check.read_docx(path)
+        self.assertEqual([k for k, _ in kinds], ["header", "header", "cell", "cell"] * 2)
+        self.assertIn("header drift", [h[3] for h in slop_check.check(text, [], kinds)])
+
+
+class VersionNaming(PatternCase):
+    CATEGORY = "version naming"
+    FLAG = (
+        "Use Vault Enterprise 2.2.0. Vault 2.2.0 adds it. Deploy a Vault 2.2 Enterprise cluster.",
+        "Vault 2.2.0 adds ML-KEM. Upgrade to Vault 2.2 first.",
+    )
+    PASS = (
+        "Vault 2.2.0 adds ML-KEM. Vault 2.2 or later supports it.",
+        "Vault 2.2.0 fixed it, and Vault 2.2.1 reverted it. Vault 2.2 is current.",
+        "Vault 2.2.0 adds ML-KEM. Vault 2.2.0 is current.",
+        "See Table 2.1 and Table 2.1.3.",
+    )
+
+    def test_reports_each_variant_after_the_first(self):
+        text = "Use Vault Enterprise 2.2.0. Vault 2.2.0 adds it. Deploy a Vault 2.2 Enterprise cluster."
+        hits = [h[4] for h in slop_check.check(text, []) if h[3] == "version naming"]
+        self.assertEqual(hits, ["Vault 2.2.0", "Vault 2.2 Enterprise"])
+
+
 CAVEAT = "The results show relative capacity rather than what the hardware will sustain."
 
 
@@ -248,6 +433,10 @@ class ProfilePatterns(unittest.TestCase):
         [(_, level, hint)] = self.load(r"\bcolor\b => colour (R7)")
         self.assertEqual((level, hint), ("profile", "colour (R7)"))
 
+    def test_anchors_match_each_line(self):
+        [(rx, _, _)] = self.load(r"^Note: => cut")
+        self.assertTrue(rx.search("First line.\nNote: second line."))
+
     def test_review_prefix_sets_the_level(self):
         [(rx, level, _)] = self.load(r"review: \bfoo\b => bar")
         self.assertEqual(level, "review")
@@ -276,6 +465,11 @@ class SerialComma(unittest.TestCase):
         "Captions use Inter, which the template embeds.",
         "Before writing, whether or not it ships, check it.",
         "No layout map, so the slot map and the list are shared.",
+        # An apposition introduces two items, so no serial comma is wanted.
+        "The operational cost of Community edition, specifically state and multi-edit collaboration problems.",
+        "Three products, including Vault and Boundary, share the module.",
+        "Two editions, namely Community and Enterprise, differ here.",
+        "Several tools, such as Vault and Consul, use Raft.",
     )
 
     def setUp(self):
@@ -308,7 +502,8 @@ class DocxStructure(unittest.TestCase):
             text, _, kinds = slop_check.read_docx(path)
             hits = [h for h in slop_check.check(text, [], kinds) if h[3] == "table echo"]
         self.assertEqual([(h[0], h[3]) for h in hits], [(9, "table echo")])
-        self.assertEqual(kinds[1], ("cell", 1))
+        self.assertEqual(kinds[1], ("header", 1))
+        self.assertEqual(kinds[3], ("cell", 1))
         self.assertEqual(kinds[7], ("caption", None))
 
     def test_each_paragraph_is_its_own(self):

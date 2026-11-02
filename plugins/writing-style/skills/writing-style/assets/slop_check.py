@@ -17,10 +17,18 @@ Deleted tracked changes are skipped, runs in a code style or a monospace font ar
 inline code, and code paragraphs and table-of-contents lines are not checked. Headers, footers,
 comments and text boxes are not read.
 
-Two checks read the document's structure rather than single sentences. The first flags the
-paragraph after a table or figure when it opens like a summary or repeats two or more of the
-table's measurements. The second flags a phrase of four or more words used in four or more
-paragraphs, ignoring headings and table cells. Both are review hits.
+Four checks read the whole file rather than single sentences, and all report review hits:
+- the paragraph after a table or figure, when it opens like a summary or repeats two or more
+  of the table's measurements;
+- a phrase of four or more words used in four or more paragraphs, ignoring headings and
+  table cells;
+- a table whose headers name a column differently from an earlier table ("Vault" against
+  "Vault capability");
+- one product version written several ways ("Vault Enterprise 2.2.0" and "Vault 2.2.0").
+
+Headings listed in the profile's ```titles block keep their capitals, as does a heading set
+in italics, because both name a work by its real title. The Obsidian Tasks plugin's date and
+priority markers are not flagged as emoji on a checkbox line.
 
 The summary line counts "rather than", which reads well once and becomes a tell when it recurs.
 
@@ -91,9 +99,40 @@ BUILTIN = [
     (r"\b(very|really|truly|incredibly|extremely)\b", "review", "intensifier", "the number that makes it true"),
     (r"\b(effectively|essentially|arguably|virtually)\b", "review", "hedge adverb", "the number or fact it stands in for"),
     (r"\b(simply|obviously|easily)\b", "review", "condescension", "cut it"),
+    (r"\b(is|are) expected to (stay|remain)\b(?! (under|below|above|over|within|at|less|more)\b)"
+     r"|\b(is|are) expected to be (secure|safe|sufficient|adequate|stable|enough)\b",
+     "review", "unsourced hedge", "name who expects it, or cut"),
+    # A measure after the adverb ("quickly, in 40 ms") earns it.
+    (r"\bquickly\b(?!,? (in|within|under|over) (about |around )?\d)"
+     r"|\brapidly\b(?! (evolving|changing)\b)(?!,? (in|within|under|over) (about |around )?\d)",
+     "review", "unmeasured speed", "say how fast, or what makes it fast"),
+    # Roadmap status
+    (r"\b(planned|targeted|scheduled|slated|expected) for (an?|the) (upcoming|future|coming) (release|version|update)s?\b"
+     # "Will be removed in a future release" is a deprecation notice rather than a roadmap status.
+     r"|(?<!removed )(?<!dropped )(?<!deleted )\bin (an?|the) (upcoming|future|coming) (release|version|update)s?\b",
+     "review", "vague status", "name the release, or say no release is assigned"),
+    (r"\bcurrently (targeted|planned|scheduled|slated)\b", "review", "vague status", "cut 'currently'"),
+    # Ownerless commitments and missing referents
+    (r"\b(can|could|will|should|may) be (raised|discussed|escalated|taken up) with\b",
+     "review", "ownerless commitment", "say who will raise it"),
+    (r"\b(against|compared (to|with)|relative to) this\.(?=\s|$)", "review", "vague referent", "name what 'this' is"),
+    (r"\bthe (main|major|principal)( [\w-]+){0,3} (standards|frameworks|tools|vendors|options|approaches)\b"
+     r"(?!:| (are|were|include|includes)\b)", "review", "unnamed set", "name them"),
+    # A table header or heading that personifies a document: "What it asks", "What they want".
+    (r"(^|\|)\s*(#{1,6}\s+)?what (it|they|this|these) (asks?|wants?|expects?|demands?)\b",
+     "review", "personified label", "name the column, such as Measure, Recommendation or Scope"),
 ]
 
-EMOJI = re.compile("[\U0001F300-\U0001FAFF☀-➿⭐✅]")
+EMOJI = re.compile("[\U0001F300-\U0001FAFF☀-➿⭐⏩-⏺]")
+# The Obsidian Tasks plugin's markers for dates, recurrence, priority and ids. A checkbox
+# line needs them, so they are not flagged there.
+TASK_LINE = re.compile(r"^\s*([-*+]|\d+[.)])\s+\[.\]\s")
+TASK_MARKERS = set("📅⏳🛫➕✅❌🔁🏁⛔🔺⏫🔼🔽⏬") | {"🆔"}
+VERSION = re.compile(r"(?-i:\b([A-Z][\w-]*)(?: (Enterprise|Community|HCP|Premium|Standard|Plus|Pro))?"
+                     r" (\d+)\.(\d+)(?:\.(\d+))?(?: (Enterprise|Community|Premium|Standard|Plus|Pro)\b)?)"
+                     r"(?!\w|\.\d)(?! (?:or|and) (?:later|newer|above))")
+NOT_PRODUCTS = {"Table", "Figure", "Fig", "Section", "Step", "Chapter", "Appendix", "Version", "Release",
+                "Phase", "Part", "Rule", "Item", "Page", "Annex"}
 HEADING = re.compile(r"^\s{0,3}#{1,6}\s+(.+?)\s*#*\s*$")
 W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 CODE_STYLES = {"code", "htmlcode", "verbatimchar", "sourcecode", "inlinecode"}
@@ -146,10 +185,27 @@ def load_profile_patterns(path):
             level, line = "review", line[len("review: "):]
         regex, _, hint = line.partition(" => ")
         try:
-            pairs.append((re.compile(regex.strip(), re.I), level, hint.strip() or "banned in profile"))
+            # Multiline, as the built-in patterns are, so ^ and $ mean a line's start and end.
+            pairs.append((re.compile(regex.strip(), re.I | re.M), level, hint.strip() or "banned in profile"))
         except re.error as e:
             print(f"warning: bad profile pattern {regex!r}: {e}", file=sys.stderr)
     return pairs
+
+
+def load_profile_titles(path):
+    """Return the headings listed in the profile's ```titles block, which the title-case check skips.
+
+    A heading that names a published work or a product by its real title keeps its capitals.
+    """
+    try:
+        with open(os.path.expanduser(path), encoding="utf-8") as f:
+            text = f.read()
+    except OSError:
+        return set()
+    block = re.search(r"^```titles\s*\n(.*?)^```", text, re.S | re.M)
+    if not block:
+        return set()
+    return {line.strip() for line in block.group(1).splitlines() if line.strip() and not line.strip().startswith("#")}
 
 
 def mask_code(text):
@@ -214,18 +270,28 @@ def _para_text(p):
     return "".join(" " * len(t) if code else t for t, code in segments)
 
 
-def _paragraphs(el, table=None, tables=None):
-    """Every paragraph under el in reading order, with the number of the top-level table it is in."""
+def _paragraphs(el, table=None, tables=None, header=False):
+    """Every paragraph under el in reading order, as (paragraph, table, header).
+
+    table is the number of the top-level table the paragraph is in, and header is true in that
+    table's first row.
+    """
     tables = tables if tables is not None else [0]
     for child in el:
         if child.tag == W + "p":
-            yield child, table
-        elif child.tag not in SKIP:
-            inner = table
-            if child.tag == W + "tbl" and table is None:
-                tables[0] += 1
-                inner = tables[0]
-            yield from _paragraphs(child, inner, tables)
+            yield child, table, header
+        elif child.tag in SKIP:
+            continue
+        elif child.tag == W + "tbl" and table is None:
+            tables[0] += 1
+            first = next((r for r in child if r.tag == W + "tr"), None)
+            for part in child:
+                if part.tag == W + "p":
+                    yield part, tables[0], False
+                elif part.tag not in SKIP:
+                    yield from _paragraphs(part, tables[0], tables, part is first)
+        else:
+            yield from _paragraphs(child, table, tables, header)
 
 
 def _para_style(p):
@@ -261,7 +327,7 @@ def read_docx(path):
     lines, locations, kinds = [], [], []
     body = ET.fromstring(parts["word/document.xml"]).find(W + "body")
     count = 0
-    for p, table in _paragraphs(body):
+    for p, table, header in _paragraphs(body):
         # Count from the raw text, so a paragraph of code still takes a number.
         if not _has_text(p):
             if next(p.iter(W + "drawing"), None) is not None or next(p.iter(W + "pict"), None) is not None:
@@ -276,7 +342,8 @@ def read_docx(path):
         prefix = _heading_prefix(style)
         lines.append(prefix + _para_text(p))
         locations.append((f"\u00b6{count}", len(prefix)))
-        kind = "cell" if table else "heading" if prefix else "caption" if style == "caption" else "prose"
+        kind = (("header" if header else "cell") if table
+                else "heading" if prefix else "caption" if style == "caption" else "prose")
         kinds.append((kind, table))
 
     for kind in ("footnote", "endnote"):
@@ -291,7 +358,7 @@ def read_docx(path):
             if note.get(W + "type") in ("separator", "continuationSeparator", "continuationNotice"):
                 continue
             label = f"{kind} {shown.get(note.get(W + 'id'), note.get(W + 'id'))}"
-            for p, _ in _paragraphs(note):
+            for p, _, _ in _paragraphs(note):
                 if _has_text(p) and not UNCHECKED_PARA_STYLE.fullmatch(_para_style(p)):
                     lines.append(_para_text(p))
                     locations.append((label, 0))
@@ -302,18 +369,20 @@ def read_docx(path):
 def classify(lines):
     """Describe each Markdown or plain-text line as (kind, table number).
 
-    Kinds are prose, heading, cell (a table row), figure (an image), caption and blank. Each run
-    of table rows is one table. Word files get the same description from read_docx().
+    Kinds are prose, heading, header (a table's first row), cell (any other table row), figure
+    (an image), caption and blank. Each run of table rows is one table. Word files get the same
+    description from read_docx(), with one line per cell.
     """
     kinds, table, in_table = [], 0, False
     for line in lines:
         stripped = line.strip()
         is_row = stripped.startswith("|")
-        if is_row and not in_table:
+        first = is_row and not in_table
+        if first:
             table += 1
         in_table = is_row
         if is_row:
-            kinds.append(("cell", table))
+            kinds.append(("header" if first else "cell", table))
         elif not stripped:
             kinds.append(("blank", None))
         elif HEADING.match(line):
@@ -359,13 +428,17 @@ def table_echoes(lines, kinds, spans):
     hits = []
     starts = {span[0]: span for span in spans}
     i = 0
+    def block(k):
+        return "cell" if k == "header" else k
+
     while i < len(kinds):
         kind, table = kinds[i]
+        kind = block(kind)
         if kind not in ("cell", "figure"):
             i += 1
             continue
         end = i
-        while end + 1 < len(kinds) and kinds[end + 1][0] == kind and kinds[end + 1][1] == table:
+        while end + 1 < len(kinds) and block(kinds[end + 1][0]) == kind and kinds[end + 1][1] == table:
             end += 1
         shown = _measurements(" ".join(lines[i:end + 1])) if kind == "cell" else set()
         nxt = end + 1
@@ -445,17 +518,93 @@ def repeated_phrases(lines, spans):
     return hits
 
 
+def _header_cells(lines, kinds):
+    """Each table's header cells, as {table: (first line index, [cell text])}, in table order."""
+    headers = {}
+    for i, (kind, table) in enumerate(kinds):
+        if kind != "header":
+            continue
+        cells = [c.strip() for c in lines[i].strip().strip("|").split("|")] if lines[i].lstrip().startswith("|") \
+            else [lines[i].strip()]
+        start, found = headers.get(table, (i, []))
+        headers[table] = (start, found + [c for c in cells if c])
+    return headers
+
+
+def header_drift(lines, kinds):
+    """Review hits for a table whose headers name the same column differently from an earlier table.
+
+    Two tables are compared when they share at least one header cell. Two differing cells in the
+    same column, where one's words are a subset of the other's ("Vault" and "Vault capability"),
+    are drift. Parallel columns such as "Before" and "After" are not, and nor is a cell that
+    shares a word with a different column.
+    """
+    def words(cell):
+        return set(WORD.findall(cell.lower()))
+
+    hits = []
+    tables = sorted(_header_cells(lines, kinds).items(), key=lambda kv: kv[1][0])
+    for n, (table, (line, cells)) in enumerate(tables):
+        for earlier, (_, prior) in tables[:n]:
+            if not set(cells) & set(prior):
+                continue
+            pair = next(((a, b) for a, b in zip(cells, prior)
+                         if a != b and a not in prior and b not in cells and words(a) and words(b)
+                         and (words(a) < words(b) or words(b) < words(a))), None)
+            if pair:
+                col = len(lines[line]) - len(lines[line].lstrip()) + 1
+                hits.append((line + 1, col, "review", "header drift", pair[0],
+                             f"an earlier table heads this column \"{pair[1]}\"; use one set of headers"))
+                break
+    return hits
+
+
+def version_naming(lines):
+    """Review hits for one product version written several ways in one file.
+
+    "Vault Enterprise 2.2.0", "Vault 2.2.0" and "Vault 2.2 Enterprise" are one release. A
+    mention followed by "or later" is a minimum rather than a name, and a file that names two
+    patch releases of one minor version is comparing them, so neither is reported.
+    """
+    groups = {}
+    for i, line in enumerate(lines):
+        for m in VERSION.finditer(line):
+            product, before, major, minor, patch, after = m.groups()
+            if product in NOT_PRODUCTS:
+                continue
+            groups.setdefault((product, major, minor), []).append((i, m.start() + 1, m.group(0), patch))
+    hits = []
+    for mentions in groups.values():
+        if len({p for *_, p in mentions if p}) > 1 or len({text for _, _, text, _ in mentions}) < 2:
+            continue
+        first = mentions[0][2]
+        for i, col, text, _ in mentions:
+            if text != first:
+                hits.append((i + 1, col, "review", "version naming", text,
+                             f"also written \"{first}\"; name the version one way"))
+    return hits
+
+
+def _emoji(line):
+    """The first emoji on a line, ignoring the Tasks plugin's markers on a checkbox line."""
+    task = TASK_LINE.match(line)
+    for m in EMOJI.finditer(line):
+        if not (task and m.group(0) in TASK_MARKERS):
+            return m
+    return None
+
+
 def is_title_case(heading):
     words = [w for w in re.findall(r"[A-Za-z][\w'-]*", heading)]
     content = [w for w in words[1:] if w.lower() not in SMALL and len(w) > 3]
     return len(content) >= 2 and all(w[0].isupper() for w in content) and not all(w.isupper() for w in content)
 
 
-def check(text, profile_patterns, kinds=None):
+def check(text, profile_patterns, kinds=None, titles=frozenset()):
     """Return hits as (line, column, level, category, match, suggestion).
 
     kinds describes each line, as read_docx() returns it; without it the text is read as
-    Markdown or plain text.
+    Markdown or plain text. titles are headings the title-case check skips.
     """
     # Curly apostrophes and non-breaking spaces, as Word types them, would slip past patterns
     # such as "it's" and "dive into". Each swap is one character for one, so columns hold.
@@ -488,10 +637,13 @@ def check(text, profile_patterns, kinds=None):
             hits.append((ln, col, level, category, m.group(0).strip(" \n.!?"), hint))
 
     for i, line in enumerate(lines, 1):
-        if EMOJI.search(line):
-            hits.append((i, EMOJI.search(line).start() + 1, "review", "emoji", EMOJI.search(line).group(0), "remove"))
+        e = _emoji(line)
+        if e:
+            hits.append((i, e.start() + 1, "review", "emoji", e.group(0), "remove"))
         h = HEADING.match(line)
-        if h and is_title_case(h.group(1)):
+        # A heading set in italics names a work by its title.
+        if (h and is_title_case(h.group(1)) and h.group(1) not in titles
+                and not re.fullmatch(r"([*_])[^*_]+\1", h.group(1))):
             hits.append((i, 1, "review", "title case", h.group(1), "sentence case"))
 
     docx = kinds is not None
@@ -499,6 +651,8 @@ def check(text, profile_patterns, kinds=None):
     spans = _paragraph_spans(lines, kinds, docx)
     hits += table_echoes(lines, kinds, spans)
     hits += repeated_phrases(lines, spans)
+    hits += header_drift(lines, kinds)
+    hits += version_naming(lines)
     hits.sort()
     return hits
 
@@ -512,6 +666,7 @@ def main():
     args = ap.parse_args()
 
     profile_patterns = [] if args.no_profile else load_profile_patterns(args.profile)
+    titles = set() if args.no_profile else load_profile_titles(args.profile)
     counts = {"slop": 0, "profile": 0, "review": 0}
     rather_than = words = 0
     unreadable = False
@@ -543,7 +698,7 @@ def main():
         prose = mask_code(text)
         rather_than += len(re.findall(r"\brather than\b", prose, re.I))
         words += len(re.findall(r"[A-Za-z0-9][\w'\u2019-]*", prose))
-        for ln, col, level, category, match, hint in check(text, profile_patterns, kinds):
+        for ln, col, level, category, match, hint in check(text, profile_patterns, kinds, titles):
             counts[level] += 1
             if locations:
                 label, offset = locations[ln - 1]
