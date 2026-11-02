@@ -51,6 +51,15 @@ The summary line also counts "rather than", because a contrast used in every oth
 becomes its own tell. A heading that names a published work by its real title is flagged as
 title case; add it to the profile's `titles` block so the checker leaves it alone.
 
+The checker's patterns come from two places. The built-in list in `slop_check.py` holds
+patterns that read as machine-written whoever the author is, and every run applies them. The
+profile's `patterns` block holds one author's choices, such as a spelling or the serial comma,
+and only that author's runs apply them. A new check is built in when any reader would call
+the match a fault, and goes in the profile when it records a preference another author could
+reasonably reject. A built-in pattern ships with the plugin and needs tests in
+`tests/test_slop_check.py`. A profile pattern is added as `references/learning.md` describes,
+and `--no-profile` turns those patterns off.
+
 - **`slop` hits** are fixed, every time.
 - **`review` hits** are judgement calls. Fix them unless the context earns the word, such as
   "robust" in a statistics paper.
