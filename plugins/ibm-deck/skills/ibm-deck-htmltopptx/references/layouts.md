@@ -20,6 +20,7 @@ make text land in the wrong place.
 | `table(title, rows)` | Table | first row is the header |
 | `code(title, code, caption)` | Blank slide + drawn panel | up to 26 lines |
 | `end()` | End slide | none — it is IBM's closing lockup |
+| `internal()` | none, a `with` block | hides every slide added inside it |
 
 ## Trap 1: heading slots and column slots look alike
 
