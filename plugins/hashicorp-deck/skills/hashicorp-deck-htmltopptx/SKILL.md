@@ -141,8 +141,9 @@ with d.internal():
     d.table("Support cases behind each issue", rows)
 ```
 
-A hidden slide is still in the file, and anyone who opens the `.pptx` can unhide it. Delete
-the internal slides before the deck goes outside the team. `Deck.hide(slide)` hides one slide
+PowerPoint for Mac's Save as PDF leaves hidden slides out, so a PDF export is safe to
+send. The `.pptx` itself still holds them, and anyone who opens it can unhide them, so delete
+the internal slides before the file goes outside the team. `Deck.hide(slide)` hides one slide
 built some other way.
 
 ## Rules that keep the output on-brand
