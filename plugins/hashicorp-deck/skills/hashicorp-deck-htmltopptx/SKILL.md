@@ -127,6 +127,24 @@ Every method appends one slide and returns it, so you can reach for python-pptx 
 if a slide needs something bespoke. `**bold**` works inside any text. Full method list and
 the layout keys they map to are in `references/layouts.md`.
 
+### Internal slides
+
+Slides meant for the presenter and not the audience, such as support case numbers, deal
+notes, or pricing, go inside `with d.internal():`. Every slide added in the block is hidden,
+so Slide Show skips it and the deck can be presented as it stands. Put the block after
+`end()`, so the internal slides sit past the closing slide.
+
+```python
+d.end()
+with d.internal():
+    d.section("Internal: remove before sending")
+    d.table("Support cases behind each issue", rows)
+```
+
+A hidden slide is still in the file, and anyone who opens the `.pptx` can unhide it. Delete
+the internal slides before the deck goes outside the team. `Deck.hide(slide)` hides one slide
+built some other way.
+
 ## Rules that keep the output on-brand
 
 - **Never set a font, color, size, or position.** Fill placeholders and let the layout's list
@@ -182,4 +200,5 @@ is in `references/layouts.md`. Read it before adding a slide type.
 - [ ] No slide exceeds its layout's slot count.
 - [ ] No icon square is left empty, and each icon fits what its column says.
 - [ ] Deck opened and eyeballed — headlines fit, nothing overflows, gradients render.
+- [ ] Internal slides built inside `d.internal()`, and deleted before the deck leaves the team.
 - [ ] Saved to the path the user asked for, and they were told where it is.

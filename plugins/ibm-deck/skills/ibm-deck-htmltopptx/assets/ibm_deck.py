@@ -21,6 +21,7 @@ shape relative to `Deck.GRID`. Requires: python-pptx.
 """
 
 import copy
+from contextlib import contextmanager
 from pathlib import Path
 
 from pptx import Presentation
@@ -154,6 +155,8 @@ class Deck:
         self.prs = Presentation(str(template or TEMPLATE))
         self.footer = footer
         self._layouts = {self._key(l.name): l for l in self.prs.slide_layouts}
+        #: Above zero inside `with deck.internal():`, where every new slide is hidden.
+        self._internal = 0
 
     @staticmethod
     def _key(name):
@@ -189,6 +192,27 @@ class Deck:
             self.set_text(self.ph(slide, "FOOTER"), self.footer)
         if notes:
             slide.notes_slide.notes_text_frame.text = notes
+        if self._internal:
+            self.hide(slide)
+        return slide
+
+    @contextmanager
+    def internal(self):
+        """Hide every slide added inside the block.
+
+        For slides meant for the presenter and not the audience, such as support case
+        numbers or deal notes. Slide Show skips a hidden slide, but it stays in the file.
+        """
+        self._internal += 1
+        try:
+            yield self
+        finally:
+            self._internal -= 1
+
+    @staticmethod
+    def hide(slide):
+        """Hide one slide in Slide Show. It stays in the file, so anyone can unhide it."""
+        slide._element.set("show", "0")
         return slide
 
     @staticmethod

@@ -24,6 +24,7 @@ the traps that make text land in the wrong place.
 | `chart(title, categories, series, subtitle)` | Title Subtitle + native chart | one value axis |
 | `code(title, code, caption, subtitle)` | Title Subtitle + drawn panel | up to 20 lines |
 | `end(text)` | Thank You | one slot, defaults to "Thank you" |
+| `internal()` | none, a `with` block | hides every slide added inside it |
 
 ## Trap 1: most "titles" are not title placeholders
 
