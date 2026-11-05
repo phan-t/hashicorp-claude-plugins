@@ -14,18 +14,21 @@ from pathlib import Path
 ASSETS = Path(__file__).resolve().parent.parent / "skills" / "hashicorp-deck-htmltopptx" / "assets"
 sys.path.insert(0, str(ASSETS))
 
+# Only python-pptx is optional. An ImportError from the deck module itself is a real
+# failure, so it is left to fail the run rather than skip every test.
 try:
     from pptx import Presentation
-    from hashicorp_deck import Deck
 except ImportError:
-    Deck = None
+    Presentation = None
+else:
+    from hashicorp_deck import Deck
 
 
 def hidden(slide):
     return slide._element.get("show") == "0"
 
 
-@unittest.skipIf(Deck is None, "python-pptx not installed")
+@unittest.skipIf(Presentation is None, "python-pptx not installed")
 class InternalSlides(unittest.TestCase):
     def test_only_slides_inside_the_block_are_hidden(self):
         d = Deck()
@@ -53,6 +56,23 @@ class InternalSlides(unittest.TestCase):
         with self.assertRaises(RuntimeError), d.internal():
             raise RuntimeError
         self.assertFalse(hidden(d.section("Shown")))
+
+    def test_drop_internal_leaves_hidden_slides_out_of_the_file(self):
+        d = Deck()
+        d.section("Shown")
+        d.end()
+        with d.internal():
+            d.section("Internal")
+        Deck.hide(d.section("Hidden by hand"))
+        with tempfile.TemporaryDirectory() as tmp:
+            sent = Path(tmp) / "sent.pptx"
+            kept = Path(tmp) / "kept.pptx"
+            d.save(sent, drop_internal=True)
+            d.save(kept)
+            self.assertEqual(len(Presentation(str(sent)).slides), 2)
+            self.assertFalse(any(hidden(s) for s in Presentation(str(sent)).slides))
+            self.assertEqual([hidden(s) for s in Presentation(str(kept)).slides],
+                             [False, False, True, True])
 
     def test_hide_one_slide(self):
         d = Deck()

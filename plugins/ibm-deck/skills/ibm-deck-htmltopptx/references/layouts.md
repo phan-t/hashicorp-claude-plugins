@@ -21,6 +21,7 @@ make text land in the wrong place.
 | `code(title, code, caption)` | Blank slide + drawn panel | up to 26 lines |
 | `end()` | End slide | none — it is IBM's closing lockup |
 | `internal()` | none, a `with` block | hides every slide added inside it |
+| `save(path, drop_internal)` | none | `drop_internal=True` writes the file without hidden slides |
 
 ## Trap 1: heading slots and column slots look alike
 

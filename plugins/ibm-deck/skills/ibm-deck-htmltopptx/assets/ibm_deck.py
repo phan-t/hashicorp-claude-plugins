@@ -22,6 +22,7 @@ shape relative to `Deck.GRID`. Requires: python-pptx.
 
 import copy
 from contextlib import contextmanager
+from io import BytesIO
 from pathlib import Path
 
 from pptx import Presentation
@@ -566,8 +567,27 @@ class Deck:
         """IBM's closing slide. It carries the logo lockup and takes no content."""
         return self.add("end", notes)
 
-    def save(self, path):
-        self.prs.save(str(path))
+    def save(self, path, drop_internal=False):
+        """Save the deck to `path`.
+
+        With `drop_internal=True` the file leaves out every hidden slide, both those built
+        inside `internal()` and those passed to `hide()`, so nothing in it can be unhidden.
+        Use it for a copy that goes outside the team. The deck in memory keeps its internal
+        slides, so the presenter's copy can be saved before or after.
+        """
+        if not drop_internal:
+            self.prs.save(str(path))
+            return path
+        buf = BytesIO()
+        self.prs.save(buf)
+        buf.seek(0)
+        prs = Presentation(buf)
+        ids = prs.slides._sldIdLst
+        for sld_id, slide in zip(list(ids), list(prs.slides)):
+            if slide._element.get("show") == "0":
+                ids.remove(sld_id)
+                prs.part.drop_rel(sld_id.rId)
+        prs.save(str(path))
         return path
 
 

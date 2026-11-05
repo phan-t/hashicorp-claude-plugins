@@ -117,10 +117,18 @@ with d.internal():
     d.table("Support cases behind each issue", rows)
 ```
 
-PowerPoint for Mac's Save as PDF leaves hidden slides out, so a PDF export is safe to
-send. The `.pptx` itself still holds them, and anyone who opens it can unhide them, so delete
-the internal slides before the file goes outside the team. `Deck.hide(slide)` hides one slide
-built some other way.
+A hidden slide is still in the `.pptx`, and anyone who opens it can unhide it. A PDF is no
+safer: PowerPoint for Mac's Save as PDF leaves hidden slides out by default, but printing with
+"Print hidden slides" ticked, or exporting from another app, puts them back. For anything that
+goes outside the team, save a second copy without them and send that, or export the PDF from
+it:
+
+```python
+d.save("deck.pptx")                                # presenter's copy, internal slides hidden
+d.save("deck-to-send.pptx", drop_internal=True)    # internal slides removed
+```
+
+`drop_internal=True` removes every hidden slide, including one hidden with `Deck.hide(slide)`.
 
 ## Rules that keep the output on-brand
 
@@ -160,5 +168,6 @@ slot — is in `references/layouts.md`. Read it before adding a slide type.
 - [ ] Sentence case throughout; no trailing full-stops on headlines.
 - [ ] No slide exceeds its layout's slot count.
 - [ ] Deck opened and eyeballed — headlines fit, nothing overflows.
-- [ ] Internal slides built inside `d.internal()`, and deleted before the deck leaves the team.
+- [ ] Internal slides built inside `d.internal()`, and any copy that leaves the team saved with
+  `drop_internal=True`.
 - [ ] Saved to the path the user asked for, and they were told where it is.

@@ -25,6 +25,7 @@ the traps that make text land in the wrong place.
 | `code(title, code, caption, subtitle)` | Title Subtitle + drawn panel | up to 20 lines |
 | `end(text)` | Thank You | one slot, defaults to "Thank you" |
 | `internal()` | none, a `with` block | hides every slide added inside it |
+| `save(path, drop_internal)` | none | `drop_internal=True` writes the file without hidden slides |
 
 ## Trap 1: most "titles" are not title placeholders
 
