@@ -1,0 +1,8 @@
+{
+  "name": "ibm-brief",
+  "version": "1.0.0",
+  "description": "IBM-branded solution brief skills. `ibm-brief-docx` writes a solution brief or data sheet from the user's draft or notes and lays it out as an editable .docx on IBM's own solution brief template: IBM Plex, the 8-bar, a side column of highlights and stats beside the main text, ruled tables, buttons, and the IBM legal page.",
+  "author": {
+    "name": "Tony Phan"
+  }
+}
