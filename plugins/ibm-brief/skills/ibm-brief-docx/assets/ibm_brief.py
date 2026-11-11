@@ -65,6 +65,7 @@ SUBTITLE_PT, SUBTITLE_LEAD, SUBTITLE_GAP = 14, 20, 14
 TITLE_LINES_MAX, SUBTITLE_LINES_MAX = 3, 3
 BUTTON_PAD = (9.5, 17, 8, 11)               # left pad, label to arrow, arrow, right pad
 LOGO_W_PT = 58.5                            # the 8-bar, as the template sets it
+KEEP_TABLE_ROWS = 12                        # rows up to which a table is kept on one page
 HERO_LOGOTYPES = {"Consulting", "iX", "Research", "Security", "Cloud", "Watson"}
 
 _NSDECL = (
@@ -406,11 +407,19 @@ class Brief:
             t.rows[r]._tr.get_or_add_trPr().append(_xml("<w:cantSplit/>"))
             for cell, text in zip(t.rows[r].cells, row):
                 self._runs(self._cell_para(cell, "Table Text"), str(text))
+        # A short table stays whole: every row keeps with the next, and the last
+        # keeps with its caption. Data tables sit outside the layout tables, so
+        # keep-with-next is safe here. A long table breaks between rows, and its
+        # header row repeats.
+        rows = list(t.rows)
+        keep = rows[:-1] if len(rows) <= KEEP_TABLE_ROWS else []
         if caption:
-            # Keep the last row with its caption; a caption never starts a page.
-            for cell in t.rows[-1].cells:
+            keep.append(rows[-1])
+        for row in keep:
+            for cell in row.cells:
                 for para in cell.paragraphs:
                     para.paragraph_format.keep_with_next = True
+        if caption:
             self._runs(self._top_para("Caption"), caption)
         return t
 
@@ -424,14 +433,16 @@ class Brief:
 
     def back_page(self, sources: Sequence[str] = (), trademarks: Sequence[str] = (),
                   attributions: Sequence[str] = (), extra: Sequence[str] = (),
-                  year: int | None = None, produced_in: str = "United States of America",
+                  year: int | None = None, produced_in: str = "the United States of America",
                   legal: Sequence[str] | None = None):
         """The closing page: numbered sources, then the copyright and legal block.
 
         trademarks are the IBM marks used in the brief beyond IBM and the IBM logo,
         such as "IBM Cloud Pak". attributions are third-party statements, one
         paragraph each ("Red Hat and OpenShift are trademarks ..."), listing only
-        the marks the brief uses. extra paragraphs go after the standard text."""
+        the marks the brief uses. extra paragraphs go after the standard text.
+        produced_in completes "Produced in", so it carries its own article:
+        "the United States of America", but "Australia"."""
         if self._backed:
             raise RuntimeError("back_page() is called once, last")
         self._backed = True
@@ -473,7 +484,7 @@ class Brief:
                 address.add_run().add_break()
             address.add_run(line)
         produced = self._cell_para(side, "Legal Side")
-        produced.add_run("Produced in the")
+        produced.add_run("Produced in")
         produced.add_run().add_break()
         produced.add_run(produced_in)
         produced.add_run().add_break()

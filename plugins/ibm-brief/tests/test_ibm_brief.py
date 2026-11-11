@@ -161,6 +161,18 @@ class Flow(unittest.TestCase):
         t = b.table(["A", "B"], [["1", "2"]], caption="Table 1. Example.")
         self.assertTrue(t.rows[-1].cells[0].paragraphs[0].paragraph_format.keep_with_next)
 
+    def test_short_table_stays_on_one_page(self):
+        b = brief()
+        t = b.table(["A", "B"], [[str(i), "x"] for i in range(5)])
+        keeps = [r.cells[0].paragraphs[0].paragraph_format.keep_with_next for r in t.rows]
+        self.assertEqual(keeps, [True] * 5 + [None])
+
+    def test_long_table_breaks_between_rows(self):
+        b = brief()
+        t = b.table(["A", "B"], [[str(i), "x"] for i in range(20)], caption="Table 1. Long.")
+        keeps = [r.cells[0].paragraphs[0].paragraph_format.keep_with_next for r in t.rows]
+        self.assertEqual(keeps, [None] * 20 + [True])
+
     def test_pagebreak_writes_one_break(self):
         b = brief()
         b.body("Page one.")
@@ -230,6 +242,14 @@ class BackPage(unittest.TestCase):
         last = b.doc.sections[-1]
         self.assertTrue(last.different_first_page_header_footer)
         self.assertIn("graphicData", last.first_page_footer._element.xml)
+
+    def test_produced_in_takes_its_own_article(self):
+        side = lambda b: b.doc.tables[-1].rows[0].cells[0]._tc.xml
+        self.assertIn("the United States of America", side(self.build()))
+        australia = side(self.build(produced_in="Australia"))
+        self.assertIn("Australia", australia)
+        self.assertNotIn("the Australia", australia)
+        self.assertNotIn("Produced in the<", australia)
 
     def test_always_warns_to_check_the_disclaimers(self):
         self.assertTrue(any("Corporate Disclaimers" in w for w in self.build().warnings))

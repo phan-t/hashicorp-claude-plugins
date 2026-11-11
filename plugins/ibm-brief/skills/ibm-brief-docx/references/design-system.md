@@ -94,6 +94,10 @@ These cost a render each to find. The tests pin them.
   next". A cover whose highlights title kept with next pushed the entire body to page 2. The
   template strips both flags from every style, stock ones included. A heading can therefore
   end a page, which is why the SKILL.md checklist asks for a look.
+- **A data table of up to 12 rows stays on one page.** Without that, a table broke after its
+  first row, or left its header alone at the foot of a page. Data tables sit outside the layout
+  tables, so keep-with-next is safe on their rows. A longer table breaks between rows and
+  repeats its header.
 - **Two tables must never touch.** Word merges them. A `Spacer` paragraph, one grid line,
   always separates them.
 - **Word ignores a page break inside a table**, so `pagebreak()` puts it on a 1pt
